@@ -1,0 +1,265 @@
+### 2025React
+
+##### 一，创建React脚手架
+
+```
+命令 npx create-react-app 项目名称
+命令 treer -i "node_modules" 获取项目文件树
+├─src
+|  └index.js
+├─scripts
+|    ├─build.js									后期执行相关打包命令的入口文件
+|    ├─start.js									
+|    └test.js
+├─public
+|   ├─favicon.ico
+|   ├─index.html
+|   ├─logo192.png
+|   ├─logo512.png
+|   ├─manifest.json
+|   └robots.txt
+├─config
+|   ├─env.js
+|   ├─getHttpsConfig.js
+|   ├─modules.js	
+|   ├─paths.js									打包中需要的一些路径管理
+|   ├─webpack.config.js							打包规则配置
+|   ├─webpackDevServer.config.js				webpackDevServer的配置
+|   ├─webpack
+|   |    ├─persistentCache
+|   |    |        └createEnvironmentHash.js
+|   ├─jest
+|   |  ├─babelTransform.js
+|   |  ├─cssTransform.js
+|   |  └fileTransform.js
+
+```
+
+##### 二，配置less less-loader 插件
+
+```
+pnpm i less less-loader@8 
+在webpack.config.js配置less less-loadder插件	
+找到了原本的sass处理路径修改成less
+1.
+    const sassRegex = /\.(scss|sass)$/;
+    const sassModuleRegex = /\.module\.(scss|sass)$/;
+    替换
+    const lessRegex = /\.less$/;
+    const lessModuleRegex = /\.module\.less$/;
+
+2.
+	找到webpackEnv的函数，找到module模块
+ 	sassRegex以及sassModuleRegex  替换lessRegex以及lessModuleRegex
+```
+
+##### 三，配置别名
+
+```
+在webpack.config.js找到webpackEnv的函数，找到resolve模块下的alias对象添加
+"@":paths.appSrc
+```
+
+##### 四，修改启动域名以及端口号
+
+```
+在start.js文件中找到
+1.
+    const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 3000;
+    const HOST = process.env.HOST || '0.0.0.0';
+    替换
+    const DEFAULT_PORT = parseInt(process.env.PORT, 10) || 8080;
+	const HOST = process.env.HOST || '127.0.01';
+通过环境变量修改
+下载插件 cross-env
+在package.json中找到scripts启动命令处
+1.
+    "start": " node scripts/start.js",
+     替换
+    "start": "cross-env PORT=8080 node scripts/start.js",
+```
+
+##### 五，修改浏览器兼容
+
+```
+在index.js入口文件中添加
+import "react-app-polyfill/stable";
+import "react-app-polyfill/ie11";
+import "react-app-polyfill/ie9";
+以及兼容ie11 ie9  stable
+```
+
+##### 六，跨域代理
+
+```js
+在src下创建setupProxy.js文件
+安装插件 pnpm i http-proxy-middleware
+在setupProxy.js书写以下代码
+
+
+1.http-proxy-middleware 2.0版本
+
+
+    const { createProxyMiddleware } = require("http-proxy-middleware");
+    module.exports = function (app) {
+      app.use(
+        createProxyMiddleware("/jian", {
+          target: "https://www.jianshu.com/asimov",
+          changeOrigin: true,
+          ws: true,
+          pathRewrite: {
+            "^/jian": "",
+          },
+        })
+      );
+      app.use(
+        createProxyMiddleware("/zhi", {
+          target: "https://news-at.zhihu.com/api/4",
+          changeOrigin: true,
+          ws: true,
+          pathRewrite: {
+            "^/zhi": "",
+          },
+        })
+      );
+    };
+
+
+2.http-proxy-middleware 3.0版本
+
+const { createProxyMiddleware } = require("http-proxy-middleware");
+module.exports = function (app) {
+  app.use(
+    "/jian",
+    createProxyMiddleware({
+      target: "https://www.jianshu.com/asimov",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/jian": "",
+      },
+    })
+  );
+  app.use(
+    "/zhi",
+    createProxyMiddleware({
+      target: "https://news-at.zhihu.com/api/4",
+      changeOrigin: true,
+      pathRewrite: {
+        "^/zhi": "",
+      },
+    })
+  );
+};
+```
+
+##### 七，React，Vue，Anglar(NG)
+
+```
+主流思想：
+	不直接操作DOM,数据驱动视图
+	数据发送改变时，会让页面刷新
+		构建了一套虚拟DOM到真实DOM的渲染体系
+		有效避免了DOM的重排和重绘
+操作DOM:
+	操作DOM比较消化性能（可能会导致DOM重排/重绘）
+
+React框架采用的是MVC体系；Vue框架采用的是MVVM体系
+```
+
+八，MVC
+
+```
+MVC：model数据层 + view视图层 + controller控制层
+	 数据层受到改变那么视图层则会刷新页面，视图层操作按钮等改变数据，则会通过React合成事件监听到，然后写业务		逻辑改变数据
+	 ***单向数据驱动***
+```
+
+<img src="D:\item\2025study\2025React\学习文档\MVC.png" alt="MVC" style="zoom:50%;" />
+
+##### 九，MVVM
+
+```
+MVVM:model数据层 + view视图层 + vievModel数据/视图监听层
+	**双向驱动**
+```
+
+<img src="D:\item\2025study\2025React\学习文档\MVVM.png" alt="MVVM" style="zoom:50%;" />
+
+##### 十，JSX构建视图的基础知识
+
+```
+JSX：javaScript and html（xml）把js和HTML标签混合在一起
+```
+
+##### 十一,React基础渲染过程
+
+```
+通过ReactDom.createRoot获取到index.html的root元素
+在使用reder方法渲染进去
+```
+
+##### 十二，稀疏数组以及密集数组
+
+```
+稀疏数组：数组的每一项都为空，无法使用数组的自身的循环方法，可以使用fill填充为密集数组
+密集数组：数组的每一项都是一个真实的值
+```
+
+##### 十三，关于JSX底层处理机制
+
+```jsx
+1.把我们编写的JSX语法，编译为虚拟DOM对象（virtualDOM）
+	虚拟DOM对象：框架自己内部构建的一套对象体系（对象相关成员都是React内部规定的），基于这些属性描述出，	  	  我们所构建视图中的DOM节点相关特征
+	
+	@1 基于bael-peset-react-app 把jSX编译为React.createElement(...)格式
+	@2 再把createElement方法执行，创建出虚拟DOM
+                                                         
+	jsx语法
+	<div id="app">Hello, <span>world!</span></div>;
+	转换
+	React.createElement(
+      'div',
+      { id: 'app' },
+      'Hello, ',
+      React.createElement('span', null, 'world!')
+    )
+    
+	React.createElement函数:
+    参数1:标签(组件)名称，参数2：标签属性对象(无属性为Null)，参数3以及后面参数：标签子节点
+    
+	React.createElement函数函数返回值：虚拟DOM对象(4个属性)
+	key:循环渲染所需要的key值
+    props对象：存放自身的属性和内容以及子节点存放在children
+    ref：
+    type：标签名称
+    
+    手写简单的createElement方法
+    export function createElement(ele, props, ...children) {
+              let virtualDom = {
+                $$typeof: Symbol("react.element"),
+                key: null,
+                props: {},
+                ref: null,
+                type: ele,
+              };
+              let len= children.length;
+              if (props !== null) {
+                virtualDom.props = {
+                  ...props,
+                };
+              }
+              if(len===1) virtualDom.props.children = children[0];
+              if (len > 1) virtualDom.props.children = children;
+              return virtualDom;
+        }
+    
+
+2.把构建的虚拟DOM渲染为真实DOM
+	真实DOM：浏览器页面中，最后渲染出来，让用户看见的DOM元素！！！
+
+补充说明：第一次渲染页面是直接从虚拟DOM转为真实DOM，但是后期更新的时候，需要经过diff算法对比，对比出新旧DOM树的差异部分，然后渲染出差异的虚拟DOM
+
+JSX语法无法选择对象，但是可以通过React.createElement("button",{ className: "btn" }, "按钮")渲染一个对象
+```
+
+<img src="D:\item\2025study\2025React\学习文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
