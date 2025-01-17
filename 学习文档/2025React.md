@@ -256,6 +256,56 @@ JSX：javaScript and html（xml）把js和HTML标签混合在一起
 
 2.把构建的虚拟DOM渲染为真实DOM
 	真实DOM：浏览器页面中，最后渲染出来，让用户看见的DOM元素！！！
+    
+    React16版本：
+    React.render(
+    	<>...</>,
+        documen.getElementById('root')
+    )
+	
+    React18版本：
+    const root = ReactDOM.createElement(document.getElementByid('root'))
+    root.render(
+    	<>...</>
+    )
+    
+	手写简单的render方法
+    // 模拟基础render：将虚拟dom对象
+    export function render(virtualDom, container) {
+  let { type, props } = virtualDom;
+  if (typeof type === "string") {
+    // 创建一个标签
+    let ele = document.createElement(type);
+    // 将属性添加到标签上以及子节点
+    eachObject(props, (key, value) => {
+      // className的处理
+      if (key === "className") {
+        ele.className = value;
+        return;
+      } else if (key === "style") {
+        // 样式的处理
+        eachObject(value, (styleKey, styleValue) => {
+          ele.style[styleKey] = styleValue;
+        });
+        return;
+      } else if (key === "children") {
+        // 处理子节点
+        let children = value;
+        if (!Array.isArray(children)) children = [children];
+        children.forEach((child) => {
+          if (/^(string|number)$/.test(typeof child)) {
+            ele.appendChild(document.createTextNode(child));
+            return;
+          }
+          render(child, ele);
+        });
+        return;
+      }
+      ele.setAttribute(key, value);
+    });
+    container.appendChild(ele);
+  }
+}
 
 补充说明：第一次渲染页面是直接从虚拟DOM转为真实DOM，但是后期更新的时候，需要经过diff算法对比，对比出新旧DOM树的差异部分，然后渲染出差异的虚拟DOM
 
@@ -263,3 +313,30 @@ JSX语法无法选择对象，但是可以通过React.createElement("button",{ c
 ```
 
 <img src="D:\item\2025study\2025React\学习文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
+
+##### 十四，封装一个简单的迭代对象方法
+
+```jsx
+/*
+  封装一个对象迭代的方法
+  for/in方法。只能迭代可枚举 非Symbol类型的属性(不建议使用)，而且会迭代公有的和私有的，性能较差
+  使用Object.getOwnPropertyNames()  ==>  获取对象所有的私有属性 （私有的）
+  使用Object.getOwnPropertySymbols() ==> 获取对象所有的Symbol类型的属性
+  Object.getOwnPropertyNames(arr).concat(Object.getOwnPropertySymbols(arr))
+  等同于上方方法，但是不兼容IE
+  Object.ownKeys();
+*/
+
+export function eachObject(obj, callback) {
+  // 判断obj是否是对象
+  if (obj === null || typeof obj !== "object")
+    throw new TypeError(obj + " is not an object");
+  // 判断callback是否是函数;
+  if (typeof callback !== "function")
+    throw new TypeError(callback + " is not a function");
+  let keys = Object.keys(obj);
+  keys.forEach((key) => {
+    callback(key, obj[key]);
+  });
+}
+```

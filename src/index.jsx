@@ -7,24 +7,28 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/index.less";
 
-import { createElement } from "@/JsxHandie";
+import { createElement, render } from "@/JsxHandie";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <>
-    <h2>2025React</h2>
-    <div className="num">10</div>
-    <div className="num">20</div>
-    {React.createElement("button", { className: "btn" }, "按钮")}
-  </>
+// root.render(
+//   <div>
+//     <h2>2025React</h2>
+//     <div className="num">10</div>
+//     <div className="num">20</div>
+//     {React.createElement("button", { className: "btn" }, "按钮")}
+//   </div>
+// );
+
+let jsxObj = createElement(
+  "div",
+  { id: "app" },
+  "Hello, ",
+  createElement("span", null, "world!"),
+  createElement("span", null, "world!"),
+  createElement("span", null, "world!"),
+  createElement("span", null, "world!")
 );
-console.log(
-  createElement(
-    "div",
-    { id: "app" },
-    "Hello, ",
-    createElement("span", null, "world!")
-  )
-);
+render(jsxObj, document.getElementById("root"));
+console.log(jsxObj);
 
 // 测试代理
 // fetch("/jian/subscriptions/recommended_collections")

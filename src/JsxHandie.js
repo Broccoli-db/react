@@ -18,7 +18,41 @@ export function createElement(ele, props, ...children) {
   return virtualDom;
 }
 // 模拟基础render：将虚拟dom对象
-export function render(virtualDom, container) {}
+export function render(virtualDom, container) {
+  let { type, props } = virtualDom;
+  if (typeof type === "string") {
+    // 创建一个标签
+    let ele = document.createElement(type);
+    // 将属性添加到标签上以及子节点
+    eachObject(props, (key, value) => {
+      // className的处理
+      if (key === "className") {
+        ele.className = value;
+        return;
+      } else if (key === "style") {
+        // 样式的处理
+        eachObject(value, (styleKey, styleValue) => {
+          ele.style[styleKey] = styleValue;
+        });
+        return;
+      } else if (key === "children") {
+        // 处理子节点
+        let children = value;
+        if (!Array.isArray(children)) children = [children];
+        children.forEach((child) => {
+          if (/^(string|number)$/.test(typeof child)) {
+            ele.appendChild(document.createTextNode(child));
+            return;
+          }
+          render(child, ele);
+        });
+        return;
+      }
+      ele.setAttribute(key, value);
+    });
+    container.appendChild(ele);
+  }
+}
 
 /*
   封装一个对象迭代的方法
