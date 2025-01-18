@@ -6,15 +6,20 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/index.less";
-import DemoOne from "./views/DemoOne";
+import Dialog from "./components/Dialog";
+import { ConfigProvider } from "antd";
+import zhCN from "antd/locale/zh_CN";
+import "dayjs/locale/zh-cn";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <DemoOne title="demo" x={10} className="demo" style={{ fontSize: "20px" }}>
-      <div slot="head">123</div>
-      <div>456</div>
-      <div slot="foot">789</div>
-    </DemoOne>
+    <ConfigProvider locale={zhCN}>
+      <Dialog title="2025React" content="2025复习React" />
+      <Dialog title="2025React" content="2025复习React">
+        <button>看不下去</button>
+        <button>再看一会吧</button>
+      </Dialog>{" "}
+    </ConfigProvider>
   </>
 );
 

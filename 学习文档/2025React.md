@@ -347,7 +347,7 @@ export function eachObject(obj, callback) {
 ##### 十五，函数组件渲染的机制
 
 ```jsx
-@1，基于bale-presset-react-app把调用的组件转换为createElement格式
+@1 基于bale-presset-react-app把调用的组件转换为createElement格式
 @2 再把createElement方法执行，创建出虚拟DOM
 
     React.createElement(DemoOne, {
@@ -506,5 +506,63 @@ export function eachObject(obj, callback) {
  		)
  	}
  	exprot default Father
+```
+
+##### 十八，静态组件以及动态组件
+
+```
+函数组件是"静态组件"：
+	第一次渲染组件，把函数执行
+        产生一个私有的上下文
+        把解析出来的props(含children)传递进来（但是被冻结了）
+        对函数返回的JSX元素虚拟DOM对象进行渲染
+    当我们去修改数据的时候
+    	修改上级上下文的变量
+    	私有变量会发生改变
+    	但是视图不会更新
+    	
+类组件以及Hooks组件都属于动态组件
+	render函数在渲染的时候，如果type是new 开头的，则会用new创建一个类的实例执行，也会把props传递过去
+
+```
+
+##### 十九，Hooks组件
+
+```
+Hooks组件是React16.8后开始提供的
+```
+
+##### 二十，安装antd，配置中文包
+
+```jsx
+安装命令 pnpm i antd
+
+配置中文以及配置日历中文，需要安装dayjs
+	安装命令 pnpm i dayjs
+	
+在入口文件配置
+	import React from "react";
+    import ReactDOM from "react-dom/client";
+    import "@/index.less";
+    import App from "@/App";
+    import { ConfigProvider } from "antd";
+    import zhCN from "antd/locale/zh_CN";
+    import "dayjs/locale/zh-cn";
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(
+      <>
+        <ConfigProvider locale={zhCN}>
+          <App/>
+        </ConfigProvider>
+      </>
+    );
+```
+
+
+
+##### 二十一,useState
+
+```
+
 ```
 
