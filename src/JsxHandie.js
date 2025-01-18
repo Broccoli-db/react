@@ -62,6 +62,7 @@ export function render(virtualDom, container) {
   Object.getOwnPropertyNames(arr).concat(Object.getOwnPropertySymbols(arr))
   等同于上方方法，但是不兼容IE
   Object.ownKeys();
+  Reflect.ownKeys(obj)
 */
 export function eachObject(obj, callback) {
   // 判断obj是否是对象
@@ -70,7 +71,8 @@ export function eachObject(obj, callback) {
   // 判断callback是否是函数;
   if (typeof callback !== "function")
     throw new TypeError(callback + " is not a function");
-  let keys = Object.keys(obj);
+  let keys = Reflect.ownKeys(obj);
+  console.log(keys);
   keys.forEach((key) => {
     callback(key, obj[key]);
   });

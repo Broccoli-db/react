@@ -6,29 +6,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/index.less";
-
-import { createElement, render } from "@/JsxHandie";
+import DemoOne from "./views/DemoOne";
+import { createElement } from "@/JsxHandie";
 const root = ReactDOM.createRoot(document.getElementById("root"));
-// root.render(
-//   <div>
-//     <h2>2025React</h2>
-//     <div className="num">10</div>
-//     <div className="num">20</div>
-//     {React.createElement("button", { className: "btn" }, "按钮")}
-//   </div>
-// );
-
-let jsxObj = createElement(
-  "div",
-  { id: "app" },
-  "Hello, ",
-  createElement("span", null, "world!"),
-  createElement("span", null, "world!"),
-  createElement("span", null, "world!"),
-  createElement("span", null, "world!")
+root.render(
+  <>
+    <DemoOne
+      title="demo"
+      x={10}
+      className="demo"
+      style={{ fontSize: "20px" }}
+    ></DemoOne>
+  </>
 );
-render(jsxObj, document.getElementById("root"));
-console.log(jsxObj);
 
 // 测试代理
 // fetch("/jian/subscriptions/recommended_collections")

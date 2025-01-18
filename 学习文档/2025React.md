@@ -219,9 +219,11 @@ JSX：javaScript and html（xml）把js和HTML标签混合在一起
 	转换
 	React.createElement(
       'div',
-      { id: 'app' },
-      'Hello, ',
-      React.createElement('span', null, 'world!')
+      {
+         id: 'app',
+      },
+        "Hello,",
+         React.createElement("span",null，world!)                                             
     )
     
 	React.createElement函数:
@@ -325,6 +327,7 @@ JSX语法无法选择对象，但是可以通过React.createElement("button",{ c
   Object.getOwnPropertyNames(arr).concat(Object.getOwnPropertySymbols(arr))
   等同于上方方法，但是不兼容IE
   Object.ownKeys();
+  Reflect.ownKeys()
 */
 
 export function eachObject(obj, callback) {
@@ -334,9 +337,53 @@ export function eachObject(obj, callback) {
   // 判断callback是否是函数;
   if (typeof callback !== "function")
     throw new TypeError(callback + " is not a function");
-  let keys = Object.keys(obj);
+  let keys =   Reflect.ownKeys(obj);
   keys.forEach((key) => {
     callback(key, obj[key]);
   });
 }
 ```
+
+##### 十五，函数组件渲染的机制
+
+```jsx
+@1，基于bale-presset-react-app把调用的组件转换为createElement格式
+@2 再把createElement方法执行，创建出虚拟DOM
+
+    React.createElement(DemoOne, {
+          title: "demo",
+          x: 10,
+          className: "demo",
+          style: {
+            fontSize: "20px"
+          }
+    });
+
+	转换为虚拟DOM对象
+    {
+        $$typeof:Symbol(react.element),
+        key:null,
+        ref:null,
+        props:{ title: "demo",
+          x: 10,
+          className: "demo",
+          style: {
+            fontSize: "20px"
+          }},
+        type:DemoOne
+    }
+@3通过rendr方法把虚拟DOM变为真实DOM
+ 
+	转换过程中会把函数执行
+    把虚拟DOM的props作为实参传递给函数
+    最后把函数执行的返回结果基于rendr方法转为真实DOM,最后转为真实DOM
+    
+```
+
+##### 十六，函数组件props相关细节处理
+
+```
+@1只读，不允许修改
+	对象本身规则：冻结，密封，不可扩展
+```
+
