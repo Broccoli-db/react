@@ -415,3 +415,96 @@ export function eachObject(obj, callback) {
         }
 ```
 
+##### 十七，关于函数组件的插槽机制
+
+```jsx
+ 使用props.children 
+ 
+ 默认插件
+ 父组件： 
+ 	import Son from "./son"
+ 	function  Father(){
+ 		return (
+        	<>
+            	<Son>
+                	<div>123</div>
+            	</Son>
+            	<Son>
+            		<div>123</div>
+                	<div>456</div>
+            	</Son>
+            </>
+        )
+ 	}
+ 	exprot default Father
+ 
+ 子组件：
+ 	function  Son(props){
+ 		return (
+ 			<>
+ 				<div></div>
+            	{props.children}
+ 			</>
+ 		)
+ 	}
+ 	exprot default Father
+
+对props.childern进行判断拆开使用
+
+	使用React.Children.toArray(children)内置方法转为数组
+    
+	improt React from 'react'
+    function  Son(props){
+        let children = React.Children.toArray(props.children)
+            return (
+                <>
+                 	{children[1]}
+                    <div>456</div>
+                    {children[0]}
+                </>
+            )
+        }
+ 	exprot default Father
+
+具名插槽
+	 父组件： 
+ 	import Son from "./son"
+ 	function  Father(){
+ 		return (
+        	<>
+            	<Son>
+            		<div slot="header">123</div>
+                	<div>456</div>
+                	<div slot="footer">789</div> 
+            	</Son>
+            </>
+        )
+ 	}
+ 	exprot default Father
+ 
+ 子组件：
+	improt React from 'react'
+ 	function  Son(props){
+    let children = React.Children.toArray(props.children)
+    let header=[]
+    let default=[]
+    let footer=[]
+    children.foeEach(i=>{
+        if(i.props.slot==="header"){
+           header.push(i) 
+        }else if(i.props.slot==="footer"){
+            default.push(i) 
+        }else{
+            footer.push(i) 
+        }
+    })
+ 		return (
+ 			<>
+ 				<div></div>
+            	{props.children}
+ 			</>
+ 		)
+ 	}
+ 	exprot default Father
+```
+
