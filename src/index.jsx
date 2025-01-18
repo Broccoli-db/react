@@ -7,7 +7,6 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "@/index.less";
 import DemoOne from "./views/DemoOne";
-import { createElement } from "@/JsxHandie";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>

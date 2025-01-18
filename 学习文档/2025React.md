@@ -384,6 +384,34 @@ export function eachObject(obj, callback) {
 
 ```
 @1只读，不允许修改
-	对象本身规则：冻结，密封，不可扩展
+	对象本身可设置规则：冻结，密封，不可扩展
+	
+	冻结：
+		Object.freeze(obj),无法修改，无法新增，无法删除以及无法做劫持。
+		Object.freeze(obj)冻结只是浅冻结，无法做到深冻结，只能递归
+		检测对象是否被冻结 Object.isFrozen(obj)。
+		
+	密封：
+		Object.seal(obj)无法新增，无法删除，可修改，不可被劫持
+		Object.seal(obj)密封只是浅密封，无法做到深密封，只能递归
+		检测对象是否被密封 Object.isSealed(obj)
+		
+	不可扩展：
+		Object.preventExtensions(obj)可修改可删除不可新增，可被劫持
+		Object.preventExtensions()不可扩展也是浅层的
+		检测对象是否被不可扩展 Object.isExtensible(obj)
+	
+	设置props的属性默认值：
+		函数组件.defaultProps={
+			key：value
+		}
+		
+	设置props的属性规则：
+		使用插件prop-types
+		improt PropTypes fome "prop-types"
+        函数组件.propTypes={
+            key:PropTypes.string.isRequired  //类型：字符串 必传
+            key:PropTypes.number			 //类型：数字 不必传
+        }
 ```
 
