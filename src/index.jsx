@@ -14,11 +14,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <ConfigProvider locale={zhCN}>
-      <Dialog title="2025React" content="2025复习React" />
-      <Dialog title="2025React" content="2025复习React">
-        <button>看不下去</button>
-        <button>再看一会吧</button>
-      </Dialog>{" "}
+      <Dialog />
     </ConfigProvider>
   </>
 );

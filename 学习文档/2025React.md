@@ -558,11 +558,53 @@ Hooks组件是React16.8后开始提供的
     );
 ```
 
-
-
 ##### 二十一,useState
 
+```jsx
+hooks组件每次更新视图：
+	都是把函数重新执行一次，会产生全新私有上下文
+	内部的代码都需要重新执行一次
+	
+useState更新过程：
+    useState每次调用都会创建一个全局变量，
+    函数会返回一个数组，数组包含变量的值以及修改变量的方法
+    首先判断useState传进来的值是否是一个undefined，
+    如果不是则对创建的好的全局变量赋值，
+    当调用修改变量的方法时，会对全局变量做出修改，然后通知视图更新
+    
+当调用useState返回的修改状态方法后，后面接着输出状态值还是旧的的值
+因为找到的变量是它的上级上下文
+
+useState返回的修改状态方法：
+	在react18中是异步的，会有一个更新队列，实现状态的批处理
+    	//执行一次
+        const handle = ()=>{
+            setXXX(XXX)
+            setXXX(XXX)
+        }
+        
+	在React-dom中有一个flushSync方法可以改变成同步的,
+			//执行两次
+            const handle = ()=>{
+                flushSync(()=>{
+                    setXXX(XXX)
+                })
+                setXXX(XXX)
+            }
+    在React16种可以放在定时器里面执行变成同步的
+            //执行两次
+            setTimeout(()=>{
+                setXXX(XXX)
+                setXXX(XXX)
+            },1000)
+
+useState修改状态值后拿到最新的值3种常用方法
+	1.用useEffect
+	2.调用状态修改方法传回调函数
+		setXXX((v)=>{
+			let newVal = v+1 
+			return newVal
+		})
 ```
 
-```
-
+<img src="D:\item\2025study\2025React\学习文档\useState更新视图过程.png" alt="useState更新视图过程" style="zoom:50%;" />
