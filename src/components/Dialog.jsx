@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { flushSync } from "react-dom";
 function Dialog(props) {
   const [num, setNum] = useState(1);
@@ -8,7 +8,11 @@ function Dialog(props) {
   });
   const obj = useRef(num);
   console.log("渲染", num3);
-
+  useEffect(() => {
+    return () => {
+      console.log("被释放了123456");
+    };
+  }, [num]);
   //   const edit = () => {
   //     flushSync(() => {
   //       setNum(num + 1);
@@ -40,10 +44,10 @@ function Dialog(props) {
     for (let i = 0; i < 10; i++) {
       flushSync(() => {
         setNum((v) => {
-          let p = v + 1
-          return p
+          let p = v + 1;
+          return p;
         });
-      })
+      });
     }
   };
   return (

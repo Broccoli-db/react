@@ -691,3 +691,58 @@ export function useState(initialState) {
   return [_state[currenIndex], setState]
 }
 ```
+
+##### 二十四。useEffect
+
+```jsx
+useEffect函数可以接收2参数
+	参数1：回调函数，参数：数组（可以不传）
+	
+useEffect(()=>{})
+	会在hooks组件任何时候执行
+	
+useEffect(()=>{}，[])
+	只会在hooks组件第一次加载的时候执行
+	
+useEffect(()=>{}，[某个状态值])
+	会在hooks组件第一次加载时执行，同时数组种的状态值发生变化也会执行
+	
+useEffect(()=>{
+	return ()=>{
+	
+	}
+})
+	返回的函数会在组件释放的时候执行
+
+useEffect(()=>{
+	return ()=>{
+		
+	}
+}，[])
+	离开组件的时候会执行
+	
+useEffect(()=>{
+	return ()=>{
+		
+	}
+}，[某个状态值])
+	依赖发生变化以及离开组件的时候会执行
+```
+
+##### 二十五，useEffect执行原理以及细节
+
+```
+执行原理：
+
+    在hooks函数第一次执行时，
+    hooks函数所有的useEffect都会被React内部的一个MountEffect方法把所有的useEffect的回调函数以及依赖性放进一个链表中，
+    当视图渲染完毕后，又会通过React内部的一个UpdateEffrct方法通知链表中所有的回调函数按要求执行，
+    如果useEffect的回调函数返回的是一个函数那么这个被返回的函数则会在hooks组件释放前执行
+    
+细节：
+	useEffect函数只能在hooks函数下调用，
+	useEffect的返回值必须是一个函数，所有回调函数不能是async函数
+	
+```
+
+<img src="D:\item\2025study\2025React\学习文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
