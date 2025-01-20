@@ -566,17 +566,22 @@ hooks组件每次更新视图：
 	内部的代码都需要重新执行一次
 	
 useState更新过程：
-    useState每次调用都会创建一个全局变量，
-    函数会返回一个数组，数组包含变量的值以及修改变量的方法
-    首先判断useState传进来的值是否是一个undefined，
-    如果不是则对创建的好的全局变量赋值，
-    当调用修改变量的方法时，会对全局变量做出修改，然后通知视图更新
-    
+   首先Hooks组件会创建两个全局变量，一个空数组，一个索引值初始值为0
+   当我们每次调用useState的时候，
+   执行过程中首先useState会把索引存储下来，
+   在把useState接收的值按照索引值放进去，
+   如果接收的值是函数就会执行函数，把函数返回值重新赋给接收的形参
+   在对全局索引值加1，最后返回状态值以及修改状态方法
+   调用修改状态方法的可以传值也可以转回调函数
+   执行的时候首先会判断形参是否是一个函数，是函数就执行，
+   把函数的返回值重新赋给形参，再根据保存下来的索引值，
+   更新数组对应的值，然后再异步通知渲染视图
+   
 当调用useState返回的修改状态方法后，后面接着输出状态值还是旧的的值
 因为找到的变量是它的上级上下文
 
 useState返回的修改状态方法：
-	在react18中是异步的，会有一个更新队列，实现状态的批处理
+	在react18中是异步的，会有一个更新队列，实现状态的批处理,队列所有的状态函数执行完成后刷新视图
     	//执行一次
         const handle = ()=>{
             setXXX(XXX)
@@ -605,6 +610,84 @@ useState修改状态值后拿到最新的值3种常用方法
 			let newVal = v+1 
 			return newVal
 		})
+
 ```
 
 <img src="D:\item\2025study\2025React\学习文档\useState更新视图过程.png" alt="useState更新视图过程" style="zoom:50%;" />
+
+##### 二十二，useState的优化机制
+
+```
+useStart修改状态方法在循环for/in中使用flushSync，不管循环几次都只会hooks组件都只会执行两次，
+	如果不使用flushSync则只会执行一次
+	原因：
+    	因为useState每次修改的状态值的时候都会把修改的值与原来的值作比较(基于Object.is方法)，
+        当他发现修改的值与原来的值相同时则不会重新执行hooks组件
+        
+但是setXXX()参数接收的是一个函数那么使用flushSync，hooks组件则会执行循环的次数
+如果不是flushSync也只是执行一次，但是最后得到状态值不相同
+
+都不使用flushSync情况下
+	cosnt [x,setX] = useState(1)
+	for(let i = 0;i<10;i++){
+		setX(x+1)
+	}
+	hooks组件执行一次，x输出为2
+	for(let i = 0;i<10;i++){
+		setX((v)=>{
+			return v+1
+		})
+	}
+	hooks组件执行一次，x输出为11
+	
+都使用flushSync情况下
+	for(let i = 0;i<10;i++){
+		flushSync(()=>{
+			setX(x+1)
+		})
+	}
+	hooks组件执行两次，x输出为2
+	for(let i = 0;i<10;i++){
+		flushSync(()=>{
+			setX((v)=>{
+				return v+1
+			})
+		})
+	}
+	hooks组件执行10次，x输出为11
+```
+
+<img src="D:\study\2025\2025_react\学习文档\useState刷新视图原理.png" alt="useState刷新视图原理" style="zoom:50%;" />
+
+##### 二十三，手写简单的useState Hooks函数
+
+```jsx
+// 模拟一个简单useState
+
+/*
+*_state：存储状态
+*_index：存储索引值
+*/
+let _state = [],
+  _index = 0;
+// 通知更新视图
+let defer = (cb) => Promise.resolve().then(cb);
+export function useState(initialState) {
+  // 储存对应的索引值
+  let currenIndex = _index
+  if (typeof initialState === 'function') {
+    initialState = initialState()
+  }
+  _state[currenIndex] = _state[currenIndex] || initialState;
+  let setState = (newState) => {
+    // 如果是函数更新
+    if (typeof newState === 'function') {
+      newState = newState(_state[currenIndex])
+    }
+    _state[currenIndex] = newState;
+    defer(renderComponent)
+  }
+  _index += 1;
+  return [_state[currenIndex], setState]
+}
+```

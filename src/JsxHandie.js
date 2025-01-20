@@ -77,3 +77,35 @@ export function eachObject(obj, callback) {
     callback(key, obj[key]);
   });
 }
+
+// 模拟一个简单useState
+
+/*
+*_state：存储状态
+*_index：存储索引值
+*/
+let _state = [],
+  _index = 0;
+// 通知更新视图
+let defer = (cb) => Promise.resolve().then(cb);
+export function useState(initialState) {
+  // 储存对应的索引值
+  let currenIndex = _index
+  if (typeof initialState === 'function') {
+    initialState = initialState()
+  }
+  _state[currenIndex] = _state[currenIndex] || initialState;
+  let setState = (newState) => {
+    // 如果是函数更新
+    if (typeof newState === 'function') {
+      newState = newState(_state[currenIndex])
+    }
+    _state[currenIndex] = newState;
+    if (_index !== 0) {
+      defer(renderComponent)
+    }
+    _index = 0
+  }
+  _index += 1;
+  return [_state[currenIndex], setState]
+}
