@@ -862,9 +862,59 @@ React两种绑定事件的方式以及区别：
    	而在给#root绑定的方法中，把之前给元素设置的onXxx/onXxxCapture属性，在相应的执行
 ```
 
-##### 二十八,合成事件原理
+##### 二十八,合成事件执行原理
 
-```
+```jsx
+结构：
+	<div id="root">
+        <div id="secondFloor">
+            <div id="thirdFloor">
+            </div>
+        </div>
+    </div>
+运行逻辑：
+		const root = document.getElementById('root');
+        const secondFloor = document.getElementById('secondFloor');
+        const thirdFloor = document.getElementById('thirdFloor');
 
+        secondFloor.onClick = () => {
+            console.log('secondFloor冒泡');
+        }
+        secondFloor.onClickCapture = () => {
+            console.log('secondFloor捕获');
+        }
+        
+        thirdFloor.onClick = () => {
+            console.log('thirdFloor冒泡');
+        }   
+        thirdFloor.onClickCapture = () => {
+            console.log('thirdFloor捕获');
+        }
+        
+        // 捕获
+        root.addEventListener('click', (ev) => {
+            let path = ev.composedPath();
+            [...path].reverse().forEach((el) => {
+                if(el.onClickCapture){
+                    el.onClickCapture()
+                }
+            })
+        },true);
+        // 冒泡
+        root.addEventListener('click', (ev) => {
+            let path = ev.composedPath();
+            path.forEach((el) => {
+                if(el.onClick){
+                    el.onClick()
+                }
+            })
+        },false);
+
+当render方法将虚拟DOM转换成真实DOM时会将所有的属性添加在标签上，
+那么当标签触发事件时就会通过事件流发生事件的捕获和冒泡阶段，
+当捕获和冒泡到根节点时，根节点会通过事件对象中composedPath方法获取到路径
+ev.composedPath()得到一个数组，
+捕获时会将数组反转然后遍历判断是否存在onXxx/onXxxCapture这儿两个属性值，
+存在即执行，冒泡同理但不需要反正数组
 ```
 
