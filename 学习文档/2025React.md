@@ -747,7 +747,15 @@ useEffect(()=>{
 
 <img src="..\学习文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
 
-##### 二十六，useRef  与  React.forwardRef  以及  useImperativeHandle
+##### 二十六，useLayouEffect
+
+```
+与useEffect运行原理基本一致，但是useLayouEffect会比useEffect更早
+```
+
+<img src="..\学习文档\useLayouEffect执行原理.png" alt="useEffect执行原理" style="zoom: 33%;" />
+
+##### 二十七，useRef  与  React.forwardRef  以及  useImperativeHandle
 
 ```jsx
 useRef与React.cerateRef区别：
@@ -813,7 +821,7 @@ useImperativeHandle用法：
 
 ```
 
-##### 二十七，React的合成事件
+##### 二十八，React的合成事件
 
 ```
 React内部基于浏览器合成的事件
@@ -862,7 +870,7 @@ React两种绑定事件的方式以及区别：
    	而在给#root绑定的方法中，把之前给元素设置的onXxx/onXxxCapture属性，在相应的执行
 ```
 
-##### 二十八,合成事件执行原理
+##### 二十九,合成事件执行原理
 
 ```jsx
 结构：
@@ -918,3 +926,4 @@ ev.composedPath()得到一个数组，
 存在即执行，冒泡同理但不需要反正数组
 ```
 
+<img src="..\学习文档\合成事件运行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
