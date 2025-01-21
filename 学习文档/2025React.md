@@ -746,3 +746,70 @@ useEffect(()=>{
 ```
 
 <img src="D:\item\2025study\2025React\学习文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
+
+##### 二十六，useRef  与  React.fowardRef  以及  useImperativeHandle
+
+```
+useRef与React.cerateRef区别：
+	1.useRef在hooks组件二次更新的时候获取的以及是之前的DOM,不会重复获取
+	2.React.cerateRef在hooks组件二次更新的时候会重新获取DOM
+	
+useRef配合React.forwardRef获取子组件元素,直接使用useRef在子组件上会报错
+	子组件：
+		conts Son = React.forwardRef(funtion Son(props,ref)=>{
+			return <div>
+				   		<span ref={ref}>子组件</span>
+				   </div>
+		})
+	父组件：
+		conts Fa = ()=>{
+			let n = useRef()
+			return <>
+						<Son ref={n}/>
+				   </>
+		}
+
+使用useRef和React.fowardRef以及useImperativeHandle完成子父组件传参
+		子组件：
+		conts Son = React.forwardRef(funtion Son(props,ref)=>{
+			useImperativeHandle(ref,()=>{
+				return {
+					子组件的方法或者参数
+				}
+			})
+			return <div>
+				   		<span ref={ref}>子组件</span>
+				   </div>
+		})
+	父组件：
+		conts Fa = ()=>{
+			let n = useRef()
+			console.log(n.current)
+			return <>
+						<Son ref={n}/>
+				   </>
+		}
+		
+	
+ React.forwardRef用法：
+ 		一个参数：一个Hooks组件，Hooks组件可以多接收到一个Ref
+ 		const Son = React.forwadrRef((props,ref)=>{
+ 			return <></>
+ 		})
+ 		
+useImperativeHandle用法：
+	两个参数：参数1（接收到的Ref）,参数2:回调函数，返回想要暴露的属性与方法
+	const Son = React.forwadrRef((props,ref)=>{
+	
+            useImperativeHandle(ref,()=>{
+                return {
+                    方法或者属性
+                }
+            })
+            
+ 		return <></>
+ 	})
+
+
+```
+

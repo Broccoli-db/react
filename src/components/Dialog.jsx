@@ -1,63 +1,29 @@
-import React, { useState, useRef, useEffect } from "react";
-import { flushSync } from "react-dom";
-function Dialog(props) {
+import { Button } from "antd";
+import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
+
+const Dialog = React.forwardRef((props, ref) => {
   const [num, setNum] = useState(1);
-  const [num2, setNum2] = useState(2);
-  const [num3, setNum3] = useState(() => {
-    return 3;
-  });
-  const obj = useRef(num);
-  console.log("渲染", num3);
-  useEffect(() => {
-    return () => {
-      console.log("被释放了123456");
-    };
-  }, [num]);
-  //   const edit = () => {
-  //     flushSync(() => {
-  //       setNum(num + 1);
-  //       console.log("num", num);
-  //     });
-  //     setNum2(num2 + 1);
-  //   };
-  //   const editTow = () => {
-  //     setNum((v) => {
-  //       let newVal = v + 1;
-  //       console.log("num回调", newVal);
-  //       return newVal;
-  //     });
-  //     console.log("num外面", num);
-  //     console.log("ref", obj);
-  //   };
-  // const edit = () => {
-  //   // setTimeout(() => {
-  //   setNum(num + 1);
-  //   setNum2(num2 + 1);
-  //   // }, 1000);
-  // };
-  // const edit = () => {
-  //   for (let i = 0; i < 10; i++) {
-  //     setNum(num + i);
-  //   }
-  // };
-  const edit = () => {
-    for (let i = 0; i < 10; i++) {
-      flushSync(() => {
-        setNum((v) => {
-          let p = v + 1;
-          return p;
-        });
-      });
-    }
-  };
+  const handleClick = () => {
+    console.log(123456);
+
+  }
+  useImperativeHandle(ref, () => ({
+    handleClick,
+  }))
   return (
     <div className="dialog_box">
-      <div>{num}</div>
-      {/* <button onClick={edit}>num+1</button>
-      <button onClick={editTow}>num+1</button> */}
-      <button onClick={edit}>num+1</button>
+      <div ref={ref}>{num}</div>
     </div>
   );
+})
+const Dialog2 = () => {
+  const n = useRef()
+  useEffect(() => {
+    console.log(n.current);
+  })
+  return <>
+    <Button onClick={() => n.current.handleClick()}>点击</Button>
+    <Dialog ref={n} />
+  </>
 }
-
-export default Dialog;
+export default Dialog2;
