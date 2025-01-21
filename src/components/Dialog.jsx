@@ -22,7 +22,7 @@ const Dialog2 = () => {
     console.log(n.current);
   })
   return <>
-    <Button onClick={() => n.current.handleClick()}>点击</Button>
+    <Button onClickCapture={() => { }} onClick={() => { }}>点击</Button>
     <Dialog ref={n} />
   </>
 }

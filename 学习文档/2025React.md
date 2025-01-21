@@ -174,7 +174,7 @@ MVC：model数据层 + view视图层 + controller控制层
 	 ***单向数据驱动***
 ```
 
-<img src="D:\item\2025study\2025React\学习文档\MVC.png" alt="MVC" style="zoom:50%;" />
+<img src="..\学习文档\MVC.png" alt="MVC" style="zoom:50%;" />
 
 ##### 九，MVVM
 
@@ -183,7 +183,7 @@ MVVM:model数据层 + view视图层 + vievModel数据/视图监听层
 	**双向驱动**
 ```
 
-<img src="D:\item\2025study\2025React\学习文档\MVVM.png" alt="MVVM" style="zoom:50%;" />
+<img src="..\学习文档\MVVM.png" alt="MVVM" style="zoom:50%;" />
 
 ##### 十，JSX构建视图的基础知识
 
@@ -314,7 +314,7 @@ JSX：javaScript and html（xml）把js和HTML标签混合在一起
 JSX语法无法选择对象，但是可以通过React.createElement("button",{ className: "btn" }, "按钮")渲染一个对象
 ```
 
-<img src="D:\item\2025study\2025React\学习文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
+<img src="..\学习文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
 
 ##### 十四，封装一个简单的迭代对象方法
 
@@ -613,7 +613,7 @@ useState修改状态值后拿到最新的值3种常用方法
 
 ```
 
-<img src="D:\item\2025study\2025React\学习文档\useState更新视图过程.png" alt="useState更新视图过程" style="zoom:50%;" />
+<img src="..\学习文档\useState更新视图过程.png" alt="useState更新视图过程" style="zoom:50%;" />
 
 ##### 二十二，useState的优化机制
 
@@ -657,7 +657,7 @@ useStart修改状态方法在循环for/in中使用flushSync，不管循环几次
 	hooks组件执行10次，x输出为11
 ```
 
-<img src="D:\study\2025\2025_react\学习文档\useState刷新视图原理.png" alt="useState刷新视图原理" style="zoom:50%;" />
+<img src="..\学习文档\useState刷新视图原理.png" alt="useState刷新视图原理" style="zoom:50%;" />
 
 ##### 二十三，手写简单的useState Hooks函数
 
@@ -745,11 +745,11 @@ useEffect(()=>{
 	
 ```
 
-<img src="D:\item\2025study\2025React\学习文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
+<img src="..\学习文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
 
-##### 二十六，useRef  与  React.fowardRef  以及  useImperativeHandle
+##### 二十六，useRef  与  React.forwardRef  以及  useImperativeHandle
 
-```
+```jsx
 useRef与React.cerateRef区别：
 	1.useRef在hooks组件二次更新的时候获取的以及是之前的DOM,不会重复获取
 	2.React.cerateRef在hooks组件二次更新的时候会重新获取DOM
@@ -810,6 +810,61 @@ useImperativeHandle用法：
  		return <></>
  	})
 
+
+```
+
+##### 二十七，React的合成事件
+
+```
+React内部基于浏览器合成的事件
+
+事件具备传播机制：
+	第一步：从最外层向最里层逐一查找（捕获阶段:分析出路劲）
+	第二步：把事件源（触发事件的元素）的触发行为（目标阶段）
+	第三步：按照捕获阶段分析出来的路径，从里到外，把每个元素相同的事件行为触发
+	阻止事件传播的两个方法
+	ev.stopPropagation():阻止事件的传播（包括捕获和冒泡）
+	ev.stopImmediatePropagtion（）：也可以阻止事件传播，只不过它可以把当前元素其他的事件，没有执行的也									 不会执行了
+	
+事件委托：
+	利用事件的传播机制，实现一套事件绑定处理方案
+	
+	优势：
+	提高JS代码的运行性能，并且把处理的逻辑都集中在一起
+	在一定的需求上需要基于事件委托
+	给动态绑定的元素做事件绑定
+
+React两种绑定事件的方式以及区别：
+	1.onXxx
+	2.onXxxCapture
+	
+	第一种是绑定在冒泡阶段
+	第二种是绑定在捕获阶段
+	所以一个元素同时用这个两个绑定一个事件，那么第二种会先执行
+
+合成事件：
+	绝对不是给当前元素基于addEventListener单独做的事件绑定，
+	React的合成事件都是基于事件委托处理的
+	在React17及以后都是委托#root这个容器（捕获和冒泡都做了委托）
+	在React17以前都是委托document容器（只做了冒泡阶段的委托）
+	只对有事件传播机制的事件做了委托
+
+在组件渲染的时候，如果发现JSX元素中有onXxx/onXxxCapture这样的属性，
+不会给当前元素直接做事件绑定，只是把绑定的方法赋值给元素的相关属性
+
+例如：
+	xxx.onClick=()=>{}
+	xxx.onClickCapture=()=>{}
+    在元素上添加了属性为xxx.onClick,属性值是一个事件
+    然后对#root这个容器做事件绑定（捕获和冒泡都做了）
+    原因：是因为组件中所有渲染的内容，最后都会插入#root容器中，
+    这样点击页面中任何一个元素，最后都会#root的事件行为触发
+   	而在给#root绑定的方法中，把之前给元素设置的onXxx/onXxxCapture属性，在相应的执行
+```
+
+##### 二十八,合成事件原理
+
+```
 
 ```
 
