@@ -1,21 +1,28 @@
 import { Button } from 'antd'
-import React, { useMemo, useState } from 'react'
+import React, { useState, memo, useCallback, forwardRef } from 'react'
 
-export default function Dialog() {
-  const [x, setX] = useState(1)
-  const [y, setY] = useState(1)
-  const [z, setZ] = useState(1)
-  const num = useMemo(() => {
-    console.log('num');
-    return x + y
-  }, [x, y])
+const Son = memo(forwardRef(() => {
+  console.log("我是子组件");
   return (
     <div>
-      <div>{num}</div>
-      <div>{z}</div>
-      <Button onClick={() => setX(x + 1)}>X增加</Button>
-      <Button onClick={() => setZ(z + 1)}>Z增加</Button>
+      <h1>我是子组件</h1>
+    </div>
+  )
+}))
+
+function Dialog() {
+  const [x, setX] = useState(0)
+  const [y, setY] = useState(0)
+  const hadelleClick = useCallback(() => {
+
+  }, [x])
+  return (
+    <div>
+      <h1>我是父组件</h1>
+      <Button onClick={() => setX(x + 1)}>点击X</Button>
+      <Button onClick={() => setY(y + 1)}>点击y</Button>
+      <Son hadelleClick={hadelleClick} />
     </div>
   )
 }
-
+export default Dialog

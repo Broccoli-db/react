@@ -947,3 +947,60 @@ useMemo()使用：
     },[x,y])
 ```
 
+##### 三十一，useCallback和memo
+
+```jsx
+useCallback()使用：
+	可接收两个参数：@1参数：回调函数，@2参数：依赖项（数组）
+	
+	组件第一次渲染时会useCallback回调函数自动执行一次，
+    后期只有依赖项发生改变，useCallback回调函数才会自动执行，
+    如果是依赖项以外的状态数据发生改变，
+    导致视图更新组件重新调用，useMemo回调函数不会执行
+    useCallback回调函数返回一个为执行的函数，
+    不是所有的函数都需要useCallback处理，
+    一般都是传给子组件的方法做处理，
+    这样做就不会导致子组件也被重新渲染
+    
+ memo:
+ 	优化子组件无效渲染，
+ 	只在子组件接收的状态值参数发生了改变才会刷新视图
+ 	
+useCallback结合memo使用：
+
+     const Son = memo(() => {
+      console.log("我是子组件");
+      return (
+        <div>
+          <h1>我是子组件</h1>
+        </div>
+      )
+    })
+
+    function Dialog() {
+      const [x, setX] = useState(0)
+      const [y, setY] = useState(0)
+      const hadelleClick = useCallback(() => {
+      }, [x])
+      return (
+        <div>
+          <h1>我是父组件</h1>
+          <Button onClick={() => setX(x + 1)}>点击X</Button>
+          <Button onClick={() => setY(y + 1)}>点击y</Button>
+          <Son hadelleClick={hadelleClick} />
+        </div>
+      )
+    }
+
+	以上情况子组件只有x的状态值发生变化，子组件才会刷新视图
+```
+
+##### 三十二，memo与forwordRef
+
+```jsx
+const Son= forwordRef((props,ref)=>{
+	return <>我是子组件</>
+})
+export default memo(Son)
+```
+
