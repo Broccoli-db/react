@@ -1100,8 +1100,11 @@ useContext()用法
 ```jsx
 1.内联样式
 2.类名唯一
-3.css module
-
+3.css module(推荐)
+	
+	需要注意：className="xxx" 这样定义类名无法做样式嵌套，
+    	   className={sty.xxx} 这样才可以做样式嵌套
+           
 	创建样式文件：xxx.module.less / xxx.module.css / xxx.module.scss / xxx.module.sass
 	.nav {
         width: 100%;
@@ -1143,5 +1146,17 @@ useContext()用法
             </div>
         )
     }
+4.React-jss插件
+5.styled-components插件
 ```
 
+##### 三十六，高阶组件
+
+```
+高阶组件：
+	利用JS中的闭包(柯里化函数)实现的组件化代理
+好处：
+	可以在调用组件的时候在返回的闭包中在做一些其他的逻辑操作
+```
+
+<img src="..\学习文档\高阶组件.png" alt="useEffect执行原理" style="zoom: 80%;" />
