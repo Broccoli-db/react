@@ -1095,3 +1095,53 @@ useContext()用法
         export default Dialog
 ```
 
+##### 三十五，样式私有化处理
+
+```jsx
+1.内联样式
+2.类名唯一
+3.css module
+
+	创建样式文件：xxx.module.less / xxx.module.css / xxx.module.scss / xxx.module.sass
+	.nav {
+        width: 100%;
+        height: 200px;
+    }
+    .box {
+        background: red;
+    }	
+	//使用样式穿透 不能穿透className={sty.xxx}这种写法
+	.nav {
+        width: 100%;
+        height: 200px;
+    }
+
+    .box {
+        background: red;
+    }
+
+    :global {
+        .num {
+            color: blue;
+        }
+
+        .ant-btn {
+            color: salmon;
+            background-color: bisque;
+        }
+    }
+	/引入使用
+	import React from 'react'
+    import sty from './index.module.less'
+    import { Button } from 'antd'
+    export default function Nav() {
+        return (
+            <div className={`${sty.nav} ${sty.box}`}>
+                我是导航组件
+                <div className='num'>2025</div>
+                <Button type="primary">Primary Button</Button>
+            </div>
+        )
+    }
+```
+

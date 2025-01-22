@@ -5,16 +5,16 @@
 
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "@/index.less";
-import Dialog from "./components/Dialog";
 import { ConfigProvider } from "antd";
 import zhCN from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
+import "@/index.less";
+import App from "./App";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <ConfigProvider locale={zhCN}>
-      <Dialog />
+      <App />
     </ConfigProvider>
   </>
 );
