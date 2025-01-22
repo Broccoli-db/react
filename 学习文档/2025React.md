@@ -1034,3 +1034,64 @@ const useAllState = (val) => {
 	主要提取一些公共的逻辑，加以复用，省去冗余的代码
 ```
 
+##### 三十四，useContext
+
+```jsx
+useContext()用法
+
+	1.创建一个js文件
+	import React from "react";
+    const ContextObject = React.createContext();
+    export default ContextObject;
+
+	2.用法
+    	import React, { useContext, useState } from 'react'
+        import ContextObject from '../contextObject'
+
+        function Dialog() {
+          const [age, setAge] = useState(18)
+          const [name, setName] = useState("张三")
+          const chage = () => {
+            setAge(age + 1)
+            setName("李四")
+          }
+          return (
+            <ContextObject.Provider value={{
+              age,
+              name,
+              chage
+            }}>
+              <div>
+                <p>祖先组件</p>
+                <Child />
+              </div>
+            </ContextObject.Provider>
+
+          )
+        }
+
+
+        // 子组件
+        const Child = () => {
+          const { age, name, chage } = useContext(ContextObject)
+          console.log(age, name, chage, "子组件");
+          return (
+            <div>
+              <p>子组件</p>
+              <GrandChild />
+            </div>
+          )
+        }
+        
+        
+        // 孙组件
+        const GrandChild = () => {
+          const { age, name, chage } = useContext(ContextObject)
+          console.log(age, name, chage, "孙组件");
+          return <div>
+            <p>孙组件</p>
+          </div>
+        }
+        export default Dialog
+```
+
