@@ -157,7 +157,7 @@ module.exports = function (app) {
 ```
 主流思想：
 	不直接操作DOM,数据驱动视图
-	数据发送改变时，会让页面刷新
+	数据发生改变时，会让页面刷新
 		构建了一套虚拟DOM到真实DOM的渲染体系
 		有效避免了DOM的重排和重绘
 操作DOM:
@@ -166,7 +166,7 @@ module.exports = function (app) {
 React框架采用的是MVC体系；Vue框架采用的是MVVM体系
 ```
 
-八，MVC
+##### 八，MVC
 
 ```
 MVC：model数据层 + view视图层 + controller控制层
@@ -927,3 +927,23 @@ ev.composedPath()得到一个数组，
 ```
 
 <img src="..\学习文档\合成事件运行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
+
+##### 三十，useMemo
+
+```jsx
+useMemo()使用：
+	可接收两个参数：@1参数：回调函数，@2参数：依赖项（数组）
+
+    组件第一次渲染时会useMemo回调函数自动执行一次，
+    后期只有依赖项发生改变，useMemo回调函数才会自动执行，
+    如果是依赖项以外的状态数据发生改变，
+    导致视图更新组件重新调用，useMemo回调函数不会执行
+    useMemo回调返回一个通过你计算的值
+    
+    const [y,setY]=useStste(1)
+    const [x,setX]=useStste(1)
+    const num = useMemo(()=>{
+        return x+y
+    },[x,y])
+```
+

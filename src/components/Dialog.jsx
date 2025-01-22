@@ -1,29 +1,21 @@
-import { Button } from "antd";
-import React, { useRef, useState, useEffect, useImperativeHandle } from "react";
+import { Button } from 'antd'
+import React, { useMemo, useState } from 'react'
 
-const Dialog = React.forwardRef((props, ref) => {
-  const [num, setNum] = useState(1);
-  const handleClick = () => {
-    console.log(123456);
-
-  }
-  useImperativeHandle(ref, () => ({
-    handleClick,
-  }))
+export default function Dialog() {
+  const [x, setX] = useState(1)
+  const [y, setY] = useState(1)
+  const [z, setZ] = useState(1)
+  const num = useMemo(() => {
+    console.log('num');
+    return x + y
+  }, [x, y])
   return (
-    <div className="dialog_box">
-      <div ref={ref}>{num}</div>
+    <div>
+      <div>{num}</div>
+      <div>{z}</div>
+      <Button onClick={() => setX(x + 1)}>X增加</Button>
+      <Button onClick={() => setZ(z + 1)}>Z增加</Button>
     </div>
-  );
-})
-const Dialog2 = () => {
-  const n = useRef()
-  useEffect(() => {
-    console.log(n.current);
-  })
-  return <>
-    <Button onClickCapture={() => { }} onClick={() => { }}>点击</Button>
-    <Dialog ref={n} />
-  </>
+  )
 }
-export default Dialog2;
+
