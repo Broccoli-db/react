@@ -998,9 +998,39 @@ useCallback结合memo使用：
 ##### 三十二，memo与forwordRef
 
 ```jsx
-const Son= forwordRef((props,ref)=>{
-	return <>我是子组件</>
-})
-export default memo(Son)
+memo和forwordRef一起使用：
+
+    const Son= forwordRef((props,ref)=>{
+        return <>我是子组件</>
+    })
+    export default memo(Son)
+```
+
+##### 三十三，自定义hooks函数
+
+```jsx
+简单的封装一个Hooks函数（基于useState二次封装）
+
+const useAllState = (val) => {
+  let [state, setState] = useState(() => {
+    return typeof val === "function" ? val() : val
+  })
+  const setObjState = (newVal) => {
+    if (typeof newVal === "function") {
+      newVal = newVal(state)
+    }
+    setState((pre) => {
+      if (Object.prototype.toString.call(newVal).includes("Object")) {
+        return { ...pre, ...newVal }
+      } else {
+        return newVal
+      }
+    })
+  }
+  return [state, setObjState]
+}
+
+自定义Hooks作用：
+	主要提取一些公共的逻辑，加以复用，省去冗余的代码
 ```
 
