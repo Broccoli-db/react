@@ -1,4 +1,5 @@
-import { createStore } from 'redux'
+// import { createStore } from 'redux'
+import { createStore } from '../MyRedux'
 /*管理员：修改STORE容器中的公共状态*/
 let initial = {
     name: 'admin',

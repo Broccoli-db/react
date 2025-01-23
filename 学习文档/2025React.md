@@ -1327,3 +1327,39 @@ useContext()用法
 ```
 
 <img src="../学习文档/组件使用Redux.png" style="zoom:80%;" />
+
+##### 四十，实现Redux部分源码
+
+```jsx
+创建一个createStore函数，
+函数接收一个reducer方法，
+返回一个对象，对象有三个方法分别是：getState,dispatch,subcrcible
+首先判断reducer是不是一个函数，不是则抛出错误，
+createStore函数定义两个变量：state：初始值，listeners:数组，存在更新状态的事件(事件池)
+然后再定义三个方法：getState,dispatch,subcrcible
+
+getState方法：
+	调用时，只需要返回state
+	
+subcrcible方法：
+	接收一个参数
+	调用时，需要判断参数是否是一个函数，不是则抛出错误，
+	而后再判断listeners事件池中有没有把传进函数加进去过，
+	如果没有则加入事件池中，调用时返回一个函数unsubcrcible
+	unsubcrcible()删除之前放在事件池的函数，
+	否则会因为Hooks函数的闭包原因无法拿到最新的更新状态方法
+	
+dispatch方法：
+	接收一个参数
+    调用时，需要判断接收的参数是不是一个对象，不是则抛出错误
+    然后检查参数是否存在type属性，否则抛出错误，
+    然后调用reducer方法，拿到reducer方法的返回值更新state公共状态值，
+    而后遍历listeners事件池执行里面的状态更新方法，
+    最后dispatch方法返回接收的参数
+    
+在调用createStore函数时，
+内部会自行调用一次dispatch方法，
+所以调用dispatch({type:"@@redux/INIT"+36位的随机数并转成36进制})
+```
+
+<img src="../学习文档/Redux底层源码与执行逻辑.png" style="zoom: 80%;" />
