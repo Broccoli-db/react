@@ -1160,3 +1160,46 @@ useContext()用法
 ```
 
 <img src="..\学习文档\高阶组件.png" alt="useEffect执行原理" style="zoom: 80%;" />
+
+##### 三十七，Redux
+
+```jsx
+运行过程：
+	1.在创建的store容器中，存储两部分内容
+		公共状态:各个组件需要共享/通信的信息
+		事件池：存放一些方法（让组件可以更新的方法）
+		
+	特点：当公共状态一旦发生改变，会默认立即通知事件池中的方法执行
+		这些方法的执行，主要目的就是让指定的组件更新，而组件一更新，
+		就可以获取到最新的公共状态信息进行渲染！！
+        
+    2.修改公共容器中的状态，不能直接修改
+      基于dispatch排放，通知reducer执行
+      在reducer中去实现状态的更新
+      
+创建步骤：		
+	1.创建全局公共容器，储存各个组件需要的公共信息
+		conts store = ceracteStore([reducer])
+	2.在组件内部获取公共状态信息，然后渲染
+		store.getState()
+	3.获取放在公共容器的事件池的事件
+		store.subscribe()
+	4.创建容器对的时候，需要传递reducer
+        let inital={...} //初始状态值
+        const reducer = (state=inital,action)=>{
+            //state 容器的状态
+            //action 派发的行为对象（必须具备type属性）
+
+            switch(action.type){
+                    //根据传递的type值不同，修改不同的状态信息
+            }
+
+            return state
+        }
+	5.派发任务，通知reducer执行修改状态
+      store.dispatch({
+          type:xxx,
+          .....
+      })
+```
+
