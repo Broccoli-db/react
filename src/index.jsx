@@ -10,11 +10,15 @@ import zhCN from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
 import "@/index.less";
 import App from "./App";
+import store from "./store";
+import ancestorsContext from "./ancestorsContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <ConfigProvider locale={zhCN}>
-      <App />
+      <ancestorsContext.Provider value={store}>
+        <App />
+      </ancestorsContext.Provider>
     </ConfigProvider>
   </>
 );

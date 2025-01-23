@@ -1199,6 +1199,131 @@ useContext()用法
           type:xxx,
           .....
       })
+	6.需要在根组件导入Store，放在上下文
+    7.安装Redux相关插件，安装命令：
+    	pnpm i @reduxjs/toolkit redux redux-logger redux-promise redux-thunk 
 ```
 
 <img src="..\学习文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
+
+##### 三十八，创建并引入Redux
+
+```
+第一步：
+    当创建Redux完成时，
+    Redux内部会主动调用reducer函数，会完成第一次执行，
+    reducer的state会拿到定义的初始值，会先克隆一份初始值，
+    action中的type属性值Redux内部会给生成一个火星文，
+    reducer函数返回克隆值，
+    后续reducer函数执行的时候，
+    然后对克隆的做出修改，在返回出去
+第二步：
+	在入口文件导入store,
+	并且创建全局上下文文件ancestorsContext.js，
+	在入口文件中把store放进全局上下文
+	最后在组件调用
+```
+
+<img src="../学习文档/创建并使用Redux.png"/>
+
+##### 三十九，使用Redux
+
+```jsx
+第一步：
+    在函数组件中引入全局上下文，
+    并拿到store公共信息容器
+    在调用store.getState()方法拿到公共信息
+    
+    import React, { useContext } from 'react'
+    import sty from './index.module.less'
+    import ancestorsContext from '../../ancestorsContext'
+    export default function Menu() {
+        const state = useContext(ancestorsContext)
+        const { name, age, sex } = state.getState()
+        return (
+            <div className={`${sty.menu} ${sty.box}`}>
+                <div>姓名：{name}</div>
+                <div>年龄：{age}</div>
+                <div>性别：{sex}</div>
+            </div>
+        )
+    }
+第二步：
+	实现修改公共信息刷新视图
+    创一个状态值，然后写一个改变状态值的方法，
+    使用store.subscribe()把改变状态值的方法加入store事件池中
+    store.subscribe()返回一个方法unsubscribe,
+    调用unsubscribe()方法可以移出store事件池的事件
+    
+    import React, { useContext, useState, useEffect } from 'react'
+    import sty from './index.module.less'
+    import ancestorsContext from '../../ancestorsContext'
+    export default function Menu() {
+        const state = useContext(ancestorsContext)
+        const { name, age, sex } = state.getState()
+        const [num, setNum] = useState(0)
+        const addNum = () => {
+            setNum(num + 1)
+        }
+        useEffect(() => {
+            let unsubscribe = state.subscribe(addNum)
+        }, [])
+        return (
+            <div className={`${sty.menu} ${sty.box}`}>
+                <div>姓名：{name}</div>
+                <div>年龄：{age}</div>
+                <div>性别：{sex}</div>
+            </div>
+        )
+    }
+
+第三步：
+	修改store的公共信息，
+    调用store.dispatch()方法，必须传一个type值
+    type与store中的switch判读值相对应
+    store.dispatch({type:xxxx})
+	useEffect也需要做出调整来保证页面更新
+    
+    import React, { useContext, useState, useEffect } from 'react'
+    import sty from './index.module.less'
+    import ancestorsContext from '../../ancestorsContext'
+    import { Button } from 'antd'
+    export default function Menu() {
+        const state = useContext(ancestorsContext)
+        const { name, age, sex } = state.getState()
+        const [num, setNum] = useState(0)
+        const addNum = () => {
+            setNum(num + 1)
+        }
+        useEffect(() => {
+            let unsubscribe = state.subscribe(addNum)
+            return () => {
+                unsubscribe()
+            }
+        }, [num])
+        // 修改姓名
+        const changeName = () => {
+            state.dispatch({ type: 'changeName', name: '张三' })
+        }
+        // 修改年龄
+        const changeAge = () => {
+            state.dispatch({ type: 'changeAge', age: 20 })
+        }
+        // 修改性别
+        const changeSex = () => {
+            state.dispatch({ type: 'changeSex', sex: '女' })
+        }
+        return (
+            <div className={`${sty.menu} ${sty.box}`}>
+                <div>姓名：{name}</div>
+                <div>年龄：{age}</div>
+                <div>性别：{sex}</div>
+                <Button onClick={changeName}>修改姓名</Button>
+                <Button onClick={changeAge}>修改年龄</Button>
+                <Button onClick={changeSex}>修改性别</Button>
+            </div>
+        )
+    }
+```
+
+<img src="../学习文档/组件使用Redux.png" />
