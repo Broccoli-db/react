@@ -1189,11 +1189,9 @@ useContext()用法
         const reducer = (state=inital,action)=>{
             //state 容器的状态
             //action 派发的行为对象（必须具备type属性）
-
             switch(action.type){
                     //根据传递的type值不同，修改不同的状态信息
             }
-
             return state
         }
 	5.派发任务，通知reducer执行修改状态
@@ -1203,3 +1201,4 @@ useContext()用法
       })
 ```
 
+<img src="..\学习文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
