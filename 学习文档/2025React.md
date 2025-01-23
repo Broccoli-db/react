@@ -1326,4 +1326,4 @@ useContext()用法
     }
 ```
 
-<img src="../学习文档/组件使用Redux.png" />
+<img src="../学习文档/组件使用Redux.png" style="zoom:80%;" />
