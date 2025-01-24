@@ -1,10 +1,10 @@
 import React, { useContext, useState, useEffect } from 'react'
-import StoreContext from '../../storeConText'
 import { Button } from 'antd';
-import actions from '../../store/actions';
+import StoreContext from '../../storeConText'
+import actions from '../../store/actions'
 export default function Index() {
     const state = useContext(StoreContext)
-    const { name, age, sex } = state.getState().menu
+    const { work, seniority, wages } = state.getState().nav
     const [blo, setBlo] = useState(false)
     const changeBlo = () => {
         setBlo(!blo)
@@ -15,30 +15,30 @@ export default function Index() {
             unSubscribe()
         }
     }, [blo])
+
     return (
         <div>
-            <div>姓名：{name}</div>
-            <div>年纪：{age}</div>
-            <div>性别：{sex}</div>
+            <div>工作：{work}</div>
+            <div>工龄：{seniority}</div>
+            <div>工资：{wages}</div>
             <Button onClick={() => {
                 state.dispatch({
-                    type: actions.menu.setName(),
-                    payload: '王五'
+                    type: actions.nav.setWork(),
+                    payload: '前端工程师'
                 })
-            }}>修改姓名</Button>
+            }}>修改工作</Button>
             <Button onClick={() => {
                 state.dispatch({
-                    type: actions.menu.setAge(),
-                    payload: 20
+                    type: actions.nav.setSeniority(),
+                    payload: "4年"
                 })
-            }}>修改年纪</Button>
+            }}>修改工龄</Button>
             <Button onClick={() => {
                 state.dispatch({
-                    type: actions.menu.setSex(),
-                    payload: '女'
+                    type: actions.nav.setWages(),
+                    payload: "百万年薪"
                 })
-            }}>修改性别</Button>
+            }}>修改工资</Button>
         </div>
     )
 }
-

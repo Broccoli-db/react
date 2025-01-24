@@ -1174,7 +1174,7 @@ useContext()用法
 		就可以获取到最新的公共状态信息进行渲染！！
         
     2.修改公共容器中的状态，不能直接修改
-      基于dispatch排放，通知reducer执行
+      基于dispatch派发，通知reducer执行
       在reducer中去实现状态的更新
       
 创建步骤：		
@@ -1363,3 +1363,203 @@ dispatch方法：
 ```
 
 <img src="../学习文档/Redux底层源码与执行逻辑.png" style="zoom: 80%;" />
+
+##### 四十一，Redux工程化
+
+```jsx
+在项目中会存在大量的组件化开发，
+所以需要把Redux工程化，
+把每个组件对应的Reducer拆开，
+最后使用Redux中的combineReducers合并起来
+
+demo1.js文件：
+	let initial = {
+		....
+	}
+	const demo1 = (state=initial,action)=>{
+		state = {...state}
+		switch(action.type){
+			 case "xxx":
+			 		....
+			 case "aaa":
+			 		....
+			 case "bbb":
+			 	    ....
+		}
+		return state
+	}
+    export default demo1
+
+demo2.js文件：
+		let initial = {
+            ....
+        }
+        const demo1 = (state=initial,action)=>{
+            state = {...state}
+            switch(action.type){
+                 case "xxx":
+                        ....
+                 case "aaa":
+                        ....
+                 case "bbb":
+                        ....
+            }
+            return state
+        }
+        export default demo1
+
+reducer.js文件
+	import { combineReducers } from 'redux';
+    import demo1 from './demo1';
+    import demo2 from './demo2';
+    const rootReducer = combineReducers({
+        demo1,
+        demo2,
+    })
+    export default rootReducer;
+
+redux.js文件：
+    import { createStore } from 'redux'
+    import reducer from './reducer'
+    const store = createStore(reducer)
+    export default store
+	
+组件内的修改公共状态用法不变
+获取公共数据数据：
+	state.getSate().xxxx  存储的对应数据对象
+```
+
+<img src="../学习文档/Redux工程化.jpg"/>
+
+##### 四十二，Redux创建以及对Redux工程化
+
+```jsx
+////第一步创建Redux并拆分reducer,而后合并reducer:
+
+	//src文件下创建store文件夹下，在下面创建index.js文件
+	//store/index.js
+	import { createStore } from "redux"
+    import reducer from "./reducer"
+    const store = createStore(reducer)
+    export default store
+
+	//在store文件创建reducer文件夹，reduce下创建index.js
+	//store/reducer/index.js
+	import { combineReducers } from "redux"
+    import menu from "./menu"
+    import nav from "./nav"
+    const reducer = combineReducers({
+        menu,
+        nav
+    })
+    export default reducer
+	
+	//在reduce文件下创建menu.js以及nav.js
+	//store/reducer/menu.js
+	import * as TYPE from "./action-typs"  //导入type标识管理文件
+    let initialState = {
+        name: '张三',
+        age: 18,
+        sex: '男',
+    }
+    const menu = (state = initialState, action) => {
+        state = { ...state }
+        switch (action.type) {
+            case TYPE.MENU_SET_NAME:
+                state.name = action.payload;
+                break;
+            case TYPE.MENU_SET_AGE:
+                state.age = action.payload;
+                break;
+            case TYPE.MENU_SET_SEX:
+                state.sex = action.payload;
+                break;
+            default:
+        }
+        return state;
+    }
+    export default menu;
+	//store/reducer/nav.js
+    import * as TYPE from './action-typs' //导入type标识管理文件
+    let initialState = {
+        work: "切图仔",
+        seniority: "1年",
+        wages: "3k",
+    }
+    const nav = (state = initialState, action) => {
+        state = { ...state }
+        switch (action.type) {
+            case TYPE.NAV_SET_WORK:
+                state.work = action.payload
+                break
+            case TYPE.NAV_SET_SENIORITY:
+                state.seniority = action.payload
+                break
+            case TYPE.NAV_SET_WAGES:
+                state.wages = action.payload
+                break
+            default:
+                break
+        }
+        return state
+    }
+    export default nav
+
+////第二步对每个reducer的type标识进行统一管理以免发生冲突：
+
+	//在reducer文件夹下创建action-type.js文件
+	//store/reducer/action-type.js
+	// menu组件
+    export const MENU_SET_NAME = 'MENU_SET_NAME'
+    export const MENU_SET_AGE = 'MENU_SET_AGE'
+    export const MENU_SET_SEX = 'MENU_SET_SEX'
+    // nav组件
+    export const NAV_SET_WORK = 'NAV_SET_WORK'
+    export const NAV_SET_SENIORITY = 'NAV_SET_SENIORITY'
+    export const NAV_SET_WAGES = 'NAV_SET_WAGES'
+	
+////第三步对每个修改的action方法进行管理
+    
+    //在store文件下创建actions文件夹，在actions下创建index.js menu.js nav.js
+    //store/actions/menu.js
+    import * as TYPE from "../reducer/action-typs" //导入type标识管理文件
+    const menu = {
+        setName() {
+            return TYPE.MENU_SET_NAME
+        },
+        setAge() {
+            return TYPE.MENU_SET_AGE
+        },
+        setSex() {
+            return TYPE.MENU_SET_SEX
+        }
+    }
+    export default menu
+
+    //store/actions/nav.js 
+	import * as TYPE from "../reducer/action-typs" //导入type标识管理文件
+    const nav = {
+        setWork() {
+            return TYPE.NAV_SET_WORK
+        },
+        setSeniority() {
+            return TYPE.NAV_SET_SENIORITY
+        },
+        setWages() {
+            return TYPE.NAV_SET_WAGES  
+        }
+    }
+    export default nav
+
+    //store/actions/index.js
+	import menu from "./menu";
+    import nav from "./nav";
+    export default {
+        menu,
+        nav
+    }
+
+//最后在组件调用公共数据以及修改数据的方法
+```
+
+<img src="../学习文档/Redux组件内使用方法.jpg"/>
