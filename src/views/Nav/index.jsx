@@ -4,7 +4,6 @@ import { Button } from "antd";
 import actions from "../../store/actions";
 export default function Index() {
   const store = useContext(StoreContext);
-  console.log(store);
   const { name, age, sex } = store.getState().nav;
   const [blo, setBlo] = useState(false);
   const { navAction } = actions;
@@ -18,8 +17,6 @@ export default function Index() {
     };
   }, [blo]);
   const changeName = () => {
-    console.log(navAction.setName());
-
     store.dispatch({
       type: navAction.setName(),
       payload: "王五",

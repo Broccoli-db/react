@@ -1563,3 +1563,21 @@ redux.js文件：
 ```
 
 <img src="../学习文档/Redux组件内使用方法.jpg"/>
+
+##### 四十三，手写Redux的combineReducers部分源码
+
+```jsx
+const myCombineReducers = (reducers)=>{
+	const reducersKeys = Reflect.ownKeys(reducers)
+	return (state={},actions)=>{
+		let newState = {}
+		reducersKeys.forEach(key=>{
+			let reduer = reducers[key]
+			newState[key] = reduer(state[key],action)
+		})
+		return newState
+	}
+}
+```
+
+<img src="../学习文档/Redux使用combineReducers内部执行逻辑.png"/>

@@ -4,7 +4,6 @@ import StoreContext from "../../storeContext";
 import actions from "../../store/actions";
 export default function Index() {
   const store = useContext(StoreContext);
-  console.log(actions);
   const { menuAction } = actions;
   const { name, age, sex } = store.getState().menu;
   const [blo, steBlo] = useState(false);
