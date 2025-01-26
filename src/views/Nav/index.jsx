@@ -1,44 +1,52 @@
-import React, { useContext, useState, useEffect } from 'react'
-import { Button } from 'antd';
-import StoreContext from '../../storeConText'
-import actions from '../../store/actions'
+import React, { useContext, useEffect, useState } from "react";
+import StoreContext from "../../storeContext";
+import { Button } from "antd";
+import actions from "../../store/actions";
 export default function Index() {
-    const state = useContext(StoreContext)
-    const { work, seniority, wages } = state.getState().nav
-    const [blo, setBlo] = useState(false)
-    const changeBlo = () => {
-        setBlo(!blo)
-    }
-    useEffect(() => {
-        let unSubscribe = state.subscribe(changeBlo)
-        return () => {
-            unSubscribe()
-        }
-    }, [blo])
+  const store = useContext(StoreContext);
+  console.log(store);
+  const { name, age, sex } = store.getState().nav;
+  const [blo, setBlo] = useState(false);
+  const { navAction } = actions;
+  const refresh = () => {
+    setBlo(!blo);
+  };
+  useEffect(() => {
+    const unSubscribe = store.subscribe(refresh);
+    return () => {
+      unSubscribe();
+    };
+  }, [blo]);
+  const changeName = () => {
+    console.log(navAction.setName());
 
-    return (
-        <div>
-            <div>工作：{work}</div>
-            <div>工龄：{seniority}</div>
-            <div>工资：{wages}</div>
-            <Button onClick={() => {
-                state.dispatch({
-                    type: actions.nav.setWork(),
-                    payload: '前端工程师'
-                })
-            }}>修改工作</Button>
-            <Button onClick={() => {
-                state.dispatch({
-                    type: actions.nav.setSeniority(),
-                    payload: "4年"
-                })
-            }}>修改工龄</Button>
-            <Button onClick={() => {
-                state.dispatch({
-                    type: actions.nav.setWages(),
-                    payload: "百万年薪"
-                })
-            }}>修改工资</Button>
-        </div>
-    )
+    store.dispatch({
+      type: navAction.setName(),
+      payload: "王五",
+    });
+  };
+  // 修改年龄
+  const changeAge = () => {
+    store.dispatch({
+      type: navAction.setAge(),
+      payload: 88,
+    });
+  };
+  // 修改性别
+  const changeSex = () => {
+    store.dispatch({
+      type: navAction.setSex(),
+      payload: "女",
+    });
+  };
+  return (
+    <div>
+      <div>姓名：{name}</div>
+      <div>年龄：{age}</div>
+      <div>性别：{sex}</div>
+      <Button onClick={changeName}>修改姓名</Button>
+      <Button onClick={changeAge}>修改年龄</Button>
+      <Button onClick={changeSex}>修改性别</Button>
+    </div>
+  );
 }

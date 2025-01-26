@@ -1,44 +1,51 @@
-import React, { useContext, useState, useEffect } from 'react'
-import StoreContext from '../../storeConText'
-import { Button } from 'antd';
-import actions from '../../store/actions';
+import { Button } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import StoreContext from "../../storeContext";
+import actions from "../../store/actions";
 export default function Index() {
-    const state = useContext(StoreContext)
-    const { name, age, sex } = state.getState().menu
-    const [blo, setBlo] = useState(false)
-    const changeBlo = () => {
-        setBlo(!blo)
-    }
-    useEffect(() => {
-        let unSubscribe = state.subscribe(changeBlo)
-        return () => {
-            unSubscribe()
-        }
-    }, [blo])
-    return (
-        <div>
-            <div>姓名：{name}</div>
-            <div>年纪：{age}</div>
-            <div>性别：{sex}</div>
-            <Button onClick={() => {
-                state.dispatch({
-                    type: actions.menu.setName(),
-                    payload: '王五'
-                })
-            }}>修改姓名</Button>
-            <Button onClick={() => {
-                state.dispatch({
-                    type: actions.menu.setAge(),
-                    payload: 20
-                })
-            }}>修改年纪</Button>
-            <Button onClick={() => {
-                state.dispatch({
-                    type: actions.menu.setSex(),
-                    payload: '女'
-                })
-            }}>修改性别</Button>
-        </div>
-    )
+  const store = useContext(StoreContext);
+  console.log(actions);
+  const { menuAction } = actions;
+  const { name, age, sex } = store.getState().menu;
+  const [blo, steBlo] = useState(false);
+  const refresh = () => {
+    steBlo(!blo);
+  };
+  useEffect(() => {
+    let unSubscribe = store.subscribe(refresh);
+    return () => {
+      unSubscribe();
+    };
+  }, [blo]);
+  // 修改姓名
+  const changeName = () => {
+    store.dispatch({
+      type: menuAction.setName(),
+      payload: "王五",
+    });
+  };
+  // 修改年龄
+  const changeAge = () => {
+    store.dispatch({
+      type: menuAction.setAge(),
+      payload: 88,
+    });
+  };
+  // 修改性别
+  const changeSex = () => {
+    store.dispatch({
+      type: menuAction.setSex(),
+      payload: "女",
+    });
+  };
+  return (
+    <div>
+      <div>姓名：{name}</div>
+      <div>年龄：{age}</div>
+      <div>性别：{sex}</div>
+      <Button onClick={changeName}>修改姓名</Button>
+      <Button onClick={changeAge}>修改年龄</Button>
+      <Button onClick={changeSex}>修改性别</Button>
+    </div>
+  );
 }
-

@@ -1,7 +1,6 @@
-import menu from "./menu";
-import nav from "./nav";
-const actions = {
-    menu,
-    nav
-}
-export default actions
+import menuAction from "./menuAction";
+import navAction from "./navAction";
+export default {
+  menuAction,
+  navAction,
+};

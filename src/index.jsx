@@ -10,8 +10,8 @@ import zhCN from "antd/locale/zh_CN";
 import "dayjs/locale/zh-cn";
 import "@/index.less";
 import App from "./App";
-import StoreContext from "./storeConText";
 import store from "./store";
+import StoreContext from "./storeContext";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
