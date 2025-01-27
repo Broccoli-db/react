@@ -1,38 +1,29 @@
 import React, { useContext, useEffect, useState } from "react";
-import StoreContext from "../../storeContext";
 import { Button } from "antd";
+// import { connect } from "react-redux";
+import { connect } from "../../myReactRedux";
 import actions from "../../store/actions";
-export default function Index() {
-  const store = useContext(StoreContext);
-  const { name, age, sex } = store.getState().nav;
-  const [blo, setBlo] = useState(false);
-  const { navAction } = actions;
-  const refresh = () => {
-    setBlo(!blo);
-  };
-  useEffect(() => {
-    const unSubscribe = store.subscribe(refresh);
-    return () => {
-      unSubscribe();
-    };
-  }, [blo]);
+function Index(props) {
+  console.log(props);
+
+  const { name, age, sex } = props;
   const changeName = () => {
-    store.dispatch({
-      type: navAction.setName(),
+    props.dispatch({
+      type: actions.navAction.setName(),
       payload: "王五",
     });
   };
   // 修改年龄
   const changeAge = () => {
-    store.dispatch({
-      type: navAction.setAge(),
-      payload: 88,
+    props.dispatch({
+      type: actions.navAction.setAge(),
+      payload: "88",
     });
   };
   // 修改性别
   const changeSex = () => {
-    store.dispatch({
-      type: navAction.setSex(),
+    props.dispatch({
+      type: actions.navAction.setSex(),
       payload: "女",
     });
   };
@@ -47,3 +38,4 @@ export default function Index() {
     </div>
   );
 }
+export default connect((state) => state.nav)(Index);

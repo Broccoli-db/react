@@ -1,39 +1,30 @@
 import { Button } from "antd";
 import React, { useContext, useEffect, useState } from "react";
-import StoreContext from "../../storeContext";
+// import { connect } from "react-redux";
+import { connect } from "../../myReactRedux";
+
 import actions from "../../store/actions";
-export default function Index() {
-  const store = useContext(StoreContext);
-  const { menuAction } = actions;
-  const { name, age, sex } = store.getState().menu;
-  const [blo, steBlo] = useState(false);
-  const refresh = () => {
-    steBlo(!blo);
-  };
-  useEffect(() => {
-    let unSubscribe = store.subscribe(refresh);
-    return () => {
-      unSubscribe();
-    };
-  }, [blo]);
+function Index(props) {
+  const { name, age, sex, dispatch } = props;
   // 修改姓名
+  // 定义一个名为changeName的函数，目前函数体为空
   const changeName = () => {
-    store.dispatch({
-      type: menuAction.setName(),
-      payload: "王五",
+    dispatch({
+      type: actions.menuAction.setName(),
+      payload: "刘六",
     });
   };
   // 修改年龄
   const changeAge = () => {
-    store.dispatch({
-      type: menuAction.setAge(),
-      payload: 88,
+    dispatch({
+      type: actions.menuAction.setAge(),
+      payload: 78,
     });
   };
   // 修改性别
   const changeSex = () => {
-    store.dispatch({
-      type: menuAction.setSex(),
+    dispatch({
+      type: actions.menuAction.setSex(),
       payload: "女",
     });
   };
@@ -48,3 +39,4 @@ export default function Index() {
     </div>
   );
 }
+export default connect((state) => state.menu)(Index);

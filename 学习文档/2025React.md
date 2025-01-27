@@ -1204,7 +1204,7 @@ useContext()用法
     	pnpm i @reduxjs/toolkit redux redux-logger redux-promise redux-thunk 
 ```
 
-<img src="..\学习文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
+46<img src="..\学习文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
 
 ##### 三十八，创建并引入Redux
 
@@ -1581,3 +1581,203 @@ const myCombineReducers = (reducers)=>{
 ```
 
 <img src="../学习文档/Redux使用combineReducers内部执行逻辑.png"/>
+
+##### 四十三，React-Redux
+
+```jsx
+安装react-redux  pnpm i react-redux
+使用react-redux
+第一步：
+	在入口文件中，引入store文件以及react-redux中的Provider组件
+	Provider组件可以接受一个store
+	
+    import React from "react";
+    import ReactDOM from "react-dom/client";
+    import { ConfigProvider } from "antd";
+    import zhCN from "antd/locale/zh_CN";
+    import "dayjs/locale/zh-cn";
+    import "@/index.less";
+    import App from "./App";
+    import store from "./store";	//引入store文件
+    import { Provider } from "react-redux"; //引入Provider
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(
+      <>
+        <ConfigProvider locale={zhCN}>
+          <Provider store={store}> //使用Provider
+            <App />
+          </Provider>
+        </ConfigProvider>
+      </>
+    );
+第二步：
+	在组件内使用react-redux的公共信息，
+	利用react-redux的connect方法，
+	connect((state)=>{},(dispatch)=>{}):接收两个回调函数
+    第一个回调函数返回可以在state获取所有的公共信息，需要用到的公共信息在回调函数返回即可
+    第二个回调函数返回修改公共信息的方法，用法如下
+    export default connect(
+      (state) => state.nav,
+      (dispatch) => {
+        return {
+          changeName: () => dispatch(actions.navAction.setName()),
+          changeAge: () => dispatch(actions.navAction.setAge()),
+          changeSex: () => dispatch(actions.navAction.setSex),
+        };
+      }
+    )(Index);
+
+	dispatch的第二种用法
+    connect()(组件)，
+    会在组件的props中自动加一个dispatch方法，直接调即可
+
+	connect((state,)=>需要用什么数据，就返回什么数据即可，(dispatch)=>{})(组件)
+	state:公共信息
+	dispatch:修改公共信息
+	然后在组件的props中可以获取到需要用到公共信息	
+
+    import React, { useContext, useEffect, useState } from "react";
+    import { Button } from "antd";
+    import { connect } from "react-redux";
+    function Index(props) {
+      console.log(props);
+      const { name, age, sex } = props; //使用公共信息
+      const changeName = () => {};
+      // 修改年龄
+      const changeAge = () => {};
+      // 修改性别
+      const changeSex = () => {};
+      return (
+        <div>
+          <div>姓名：{name}</div>
+          <div>年龄：{age}</div>
+          <div>性别：{sex}</div>
+          <Button onClick={changeName}>修改姓名</Button>
+          <Button onClick={changeAge}>修改年龄</Button>
+          <Button onClick={changeSex}>修改性别</Button>
+        </div>
+      );
+    }
+    export default connect((state) => state.nav)(Index);//调用connect方法并返回需要用到的公共数据
+
+第三步：
+	调用dispatch修改信息，
+    dispatch的第二种用法
+    connect()(组件)，
+    会在组件的props中自动加一个dispatch方法，直接调即可
+    
+    import React, { useContext, useEffect, useState } from "react";
+    import { Button } from "antd";
+    import { connect } from "react-redux";
+    import actions from "../../store/actions";
+    function Index(props) {
+      const { name, age, sex } = props;
+      const changeName = () => {
+        props.dispatch({
+          type: actions.navAction.setName(),  //直接调用dispatch
+          payload: "张三",
+        });
+      };
+      // 修改年龄
+      const changeAge = () => {};
+      // 修改性别
+      const changeSex = () => {};
+      return (
+        <div>
+          <div>姓名：{name}</div>
+          <div>年龄：{age}</div>
+          <div>性别：{sex}</div>
+          <Button onClick={changeName}>修改姓名</Button>
+          <Button onClick={changeAge}>修改年龄</Button>
+          <Button onClick={changeSex}>修改性别</Button>
+        </div>
+      );
+    }
+    export default connect((state) => state.nav)(Index);
+```
+
+##### 四十四，手写React-redux部分源码
+
+```jsx
+第一步：
+	首先React-redux需要导出一个Provider组件
+	Provider组件需要接收一个store公共信息容器
+    并且要把这个store公共信息传递Provider组件下所有的子组件
+    所以需要用全局上下文，createContext创建全局上下文
+	Provider返回组件并把store放进上下文中
+    返回 <Context.Provider value={store}>{children}</Context.Provider>;
+	
+第二步：
+	React-redux还需要导出一个connect方法，
+	connect方法接收两个参数：mapStateToProps：不是必传，mapDispatchToProps：不是必传，
+	connect方法返回一个currying函数，
+    需要判断mapStateToProps和mapDispatchToProps这两个参数
+    都不传的情况下：
+    	mapStateToProps等于一个函数，该函数接收一个参数，参数默认是对象，并返回出去
+        mapDispatchToProps等于一个函数，该函数接收一个参数，参数是dispatch，并返回出去{dispatch}
+	connect方法返回的currying函数：接收一个参数，参数是一个组件（Component）
+    currying函数函数返回一个高阶组件HOC
+	高阶组件HOC返回的是currying函数接收的组件（Component）
+    高阶组件HOC需要把自身接收到的props传递给Component组件
+   	高阶组件HOC内首先要用useContext拿到创建好的全局上下文store，
+    并解构出store中的getState和dispatch以及subscribe这三个方法
+    首先需要在useEffect中调用subscribe()函数并把刷新页面的状态函数传递进去
+    然后在调用getState()方法拿到state公共数据并且传递给Component组件
+    最后在判断mapDispatchToProps是否是一个函数，是的话直接mapDispatchToProps()调用
+    把dispatch传递进去，如果不是那么就是需要调用Redux中bindActionCreators()方法，
+    把mapDispatchToProps和dispatch依次传递进去，在赋值给新的变量，把这个新的变量传递给Component组件
+    
+	import React, {
+      createContext,
+      useContext,
+      useEffect,
+      useState,
+      useMemo,
+    } from "react";
+    import { bindActionCreators } from "redux";
+    const Context = createContext();
+
+    export const Provider = ({ store, children }) => {
+      return <Context.Provider value={store}>{children}</Context.Provider>;
+    };
+
+    export const connect = (mapStateToProps, mapDispatchToProps) => {
+      if (!mapStateToProps) {
+        mapStateToProps = (obj = {}) => {
+          return obj;
+        };
+      }
+      if (!mapDispatchToProps) {
+        mapDispatchToProps = (dispatch) => {
+          return {
+            dispatch,
+          };
+        };
+      }
+      return function currying(Component) {
+        return function HOC(props) {
+          const store = useContext(Context);
+          const { getState, dispatch, subscribe } = store;
+          let [blo, setBlo] = useState(false);
+          useEffect(() => {
+            let unSubscribe = subscribe(() => {
+              setBlo((blo) => !blo);
+            });
+            return () => {
+              unSubscribe();
+            };
+          }, []);
+          const state = getState();
+          const newState = useMemo(() => mapStateToProps(state), [state]);
+          let newDispatch = {};
+          if (typeof mapDispatchToProps === "function") {
+            newDispatch = mapDispatchToProps(dispatch);
+          } else {
+            newDispatch = bindActionCreators(mapDispatchToProps, dispatch);
+          }
+          return <Component {...props} {...newState} {...newDispatch} />;
+        };
+      };
+    };
+```
+

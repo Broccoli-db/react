@@ -11,14 +11,15 @@ import "dayjs/locale/zh-cn";
 import "@/index.less";
 import App from "./App";
 import store from "./store";
-import StoreContext from "./storeContext";
+// import { Provider } from "react-redux";
+import { Provider } from "./myReactRedux";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <ConfigProvider locale={zhCN}>
-      <StoreContext.Provider value={store}>
+      <Provider store={store}>
         <App />
-      </StoreContext.Provider>
+      </Provider>
     </ConfigProvider>
   </>
 );
