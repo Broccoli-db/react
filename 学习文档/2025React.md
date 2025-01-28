@@ -1781,3 +1781,111 @@ const myCombineReducers = (reducers)=>{
     };
 ```
 
+##### 四十五，React-Tookit
+
+```jsx
+第一步：
+	创建store文件夹，在store文件下创建index.js文件
+	import { configureStore } from "@reduxjs/toolkit";
+    import menu from "./menu";										//引入menu.js文件
+    const store = configureStore({
+      reducer: {
+        menu,
+      },
+    });
+    export default store;
+	
+	在store文件下创建menu.js文件
+    import { createSlice } from "@reduxjs/toolkit";
+    const menuSlice = createSlice({
+      name: "menu",
+      initialState: {
+        name: "张三",
+        age: 18,
+        sex: "男",
+        arr:[]
+      },
+      reducers: {
+        setName(state, action) {
+          state.name = action.payload;
+        },
+        setAge(state, action) {
+          state.age = action.payload;
+        },
+        setSex(state, action) {
+          state.sex = action.payload;
+        },
+        setArr(state, action) {
+          state.arr = action.payload;
+        },
+      },
+    });
+	export const { setName, setAge, setSex, setArr } = menuSlice.actions;
+	//异步调用
+    export const setNameSync = () => {
+      return async (dispatch) => {
+        try {
+          let res = await fetch("/jian/subscriptions/recommended_collections");
+          let data = await res.json();
+          dispatch(setArr(data));
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    };
+    export default menuSlice.reducer;
+
+
+第二步：
+	在入口文件中引入store文件，并使用react-redux中的Provider
+	import React from "react";
+    import ReactDOM from "react-dom/client";
+    import { ConfigProvider } from "antd";
+    import zhCN from "antd/locale/zh_CN";
+    import "dayjs/locale/zh-cn";
+    import "@/index.less";
+    import App from "./App";
+    import store from "./store";											//引入store文件
+    import { Provider } from "react-redux";
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(
+      <>
+        <ConfigProvider locale={zhCN}>
+          <Provider store={store}>
+            <App />
+          </Provider>
+        </ConfigProvider>
+      </>
+    );
+
+第三步：
+	在组件内使用
+    import React, { useEffect, useMemo } from "react";
+    import { useDispatch, useSelector } from "react-redux";
+    import { setNameSync, setName, setAge, setSex } from "../../store/menu";
+    import { Button } from "antd";
+    export default function Index() {
+      const dispatch = useDispatch();
+      const { name, age, sex } = useSelector((state) => {
+        return state.menu;
+      });
+      useEffect(() => {
+        dispatch(setNameSync());
+      }, []);
+      const newName = useMemo(() => {
+        return `我是${name}`;
+      }, [name]);
+      return (
+        <div>
+          <div>姓名：{name}</div>
+          <div>年龄：{age}</div>
+          <div>性别：{sex}</div>
+          <div>{newName}</div>
+          <Button onClick={() => dispatch(setName("王五"))}>修改姓名</Button>
+          <Button onClick={() => dispatch(setAge(20))}>修改年龄</Button>
+          <Button onClick={() => dispatch(setSex("女"))}>修改性别</Button>
+        </div>
+      );
+    }
+```
+

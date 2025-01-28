@@ -1,4 +1,8 @@
-import { createStore } from "redux";
-import reducers from "./reducers";
-const store = createStore(reducers);
+import { configureStore } from "@reduxjs/toolkit";
+import menu from "./menu";
+const store = configureStore({
+  reducer: {
+    menu,
+  },
+});
 export default store;

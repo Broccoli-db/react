@@ -11,8 +11,7 @@ import "dayjs/locale/zh-cn";
 import "@/index.less";
 import App from "./App";
 import store from "./store";
-// import { Provider } from "react-redux";
-import { Provider } from "./myReactRedux";
+import { Provider } from "react-redux";
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>

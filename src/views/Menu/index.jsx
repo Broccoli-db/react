@@ -1,42 +1,29 @@
+import React, { useEffect, useMemo } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { setNameSync, setName, setAge, setSex } from "../../store/menu";
 import { Button } from "antd";
-import React, { useContext, useEffect, useState } from "react";
-// import { connect } from "react-redux";
-import { connect } from "../../myReactRedux";
+export default function Index() {
+  const dispatch = useDispatch();
+  const { name, age, sex } = useSelector((state) => {
+    return state.menu;
+  });
+  console.log(123);
 
-import actions from "../../store/actions";
-function Index(props) {
-  const { name, age, sex, dispatch } = props;
-  // 修改姓名
-  // 定义一个名为changeName的函数，目前函数体为空
-  const changeName = () => {
-    dispatch({
-      type: actions.menuAction.setName(),
-      payload: "刘六",
-    });
-  };
-  // 修改年龄
-  const changeAge = () => {
-    dispatch({
-      type: actions.menuAction.setAge(),
-      payload: 78,
-    });
-  };
-  // 修改性别
-  const changeSex = () => {
-    dispatch({
-      type: actions.menuAction.setSex(),
-      payload: "女",
-    });
-  };
+  useEffect(() => {
+    dispatch(setNameSync());
+  }, []);
+  const newName = useMemo(() => {
+    return `我是${name}`;
+  }, [name]);
   return (
     <div>
       <div>姓名：{name}</div>
       <div>年龄：{age}</div>
       <div>性别：{sex}</div>
-      <Button onClick={changeName}>修改姓名</Button>
-      <Button onClick={changeAge}>修改年龄</Button>
-      <Button onClick={changeSex}>修改性别</Button>
+      <div>{newName}</div>
+      <Button onClick={() => dispatch(setName("王五"))}>修改姓名</Button>
+      <Button onClick={() => dispatch(setAge(20))}>修改年龄</Button>
+      <Button onClick={() => dispatch(setSex("女"))}>修改性别</Button>
     </div>
   );
 }
-export default connect((state) => state.menu)(Index);
