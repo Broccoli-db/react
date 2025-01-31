@@ -1,82 +1,56 @@
-/*
-配置路由表：数组，数组中每一项就是一个需要配置的路由规则
-    + redirect：true 此配置是重定向
-    + from：来源的地址
-    + to：重定向的地址
-    + exact：是否精准匹配
-    + path：路由的路径
-    + component：路由对应的组件
-    + name:路由名称
-    + meta：{} 路由元信息(包含路由的一些信息)
-    + children：[] 子路由
-*/
+import { Navigate } from "react-router-dom";
 import { lazy } from "react";
 import A from "../views/A";
-const routers = [
+export default [
   {
-    redirect: true,
-    from: "/",
-    to: "/a",
-    exact: true,
+    path: "/",
+    element: () => <Navigate to="/a" />,
   },
   {
     path: "/a",
-    component: A,
     name: "a",
-    meta: {},
+    element: A,
     children: [
       {
-        redirect: true,
-        from: "/a",
-        to: "/a/a1",
-        exact: true,
+        path: "/a",
+        element: () => <Navigate to="/a/a1" />,
       },
       {
         path: "/a/a1",
-        component: lazy(() =>
-          import(/* webpackChunkName:"AChild"*/ "../views/A/A1")
-        ),
-        name: "a1",
-        meta: {},
+        element: lazy(() => import("../views/A/A1")),
         children: [],
+        meta: {},
+        name: "a1",
       },
       {
         path: "/a/a2",
-        component: lazy(() =>
-          import(/* webpackChunkName:"AChild"*/ "../views/A/A2")
-        ),
-        name: "a2",
-        meta: {},
+        element: lazy(() => import("../views/A/A2")),
         children: [],
+        meta: {},
+        name: "a2",
       },
       {
         path: "/a/a3",
-        component: lazy(() =>
-          import(/* webpackChunkName:"AChild"*/ "../views/A/A3")
-        ),
-        name: "a3",
-        meta: {},
+        element: lazy(() => import("../views/A/A3")),
         children: [],
+        meta: {},
+        name: "a3",
       },
     ],
+    meta: {},
   },
   {
     path: "/b",
-    component: lazy(() => import("../views/B")),
     name: "b",
-    meta: {},
+    element: lazy(() => import("../views/B")),
     children: [],
+    meta: {},
   },
   {
     path: "/c",
-    component: lazy(() => import("../views/C")),
     name: "c",
-    meta: {},
+    element: lazy(() => import("../views/C")),
     children: [],
-  },
-  {
-    redirect: true,
-    to: "/a",
+    meta: {},
   },
 ];
-export default routers;

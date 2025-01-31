@@ -1,9 +1,5 @@
-import React from 'react'
+import React from "react";
 
 export default function A2() {
-  return (
-    <div>
-      我是A2页面
-    </div>
-  )
+  return <div>我是A2组件</div>;
 }

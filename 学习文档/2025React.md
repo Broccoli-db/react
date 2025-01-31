@@ -2198,3 +2198,181 @@ Suspense组件：
 	匹配上一样的，会默认设置active选中的样式，也可以基于activeClassName重新指定样式类名
 ```
 
+##### 五十三，react-router-dom @6版本
+
+```jsx
+移除了：Switch，Redirect，withRouter
+
+Switch ===》 Routers:被Routers替代
+
+Router：
+	语法也发生变化,不在需要exact做精准匹配，自带精准匹配
+	<Router path="地址" element={<组件></组件>}></Router>
+
+Redirect ===》 Navigate：
+	被Navigate替代，而且不能直接放在Routers下作为它的子组件，
+	只能放在Router的element属性作为它的属性值
+	<Route path="/" element={<Navigate to="/a"></Navigate>}></Route>
+
+useNavigate:
+	替代了push和replace
+    import {useNavigate} from "react-router-dom"
+	const navigate = useNavigate()
+    navigate("地址")
+	navigate("地址"，{replace：true}) //不新增历史记录
+    navigate({
+        pathName:"地址"，
+        search:"url传参"，
+    })
+    navigate("地址"，{
+		replace：true
+        state:{"隐式传参"}  //刷新页面state的数据不会丢失
+    })
+```
+
+<img src="../学习文档/ReactRouterDom @6 多级路由.png">
+
+##### 五十四，对react-router-dom @6 路由表统一管理
+
+```jsx
+在src下创建router文件夹
+在router文件夹创建index.js和routers.js文件
+
+第一步：
+	在router.js文件配好路由表信息
+	import { Navigate } from "react-router-dom";
+    import { lazy } from "react";
+    import A from "../views/A";
+    export const routes = [
+      {
+        path: "/",
+        element: () => <Navigate to="/a" />,
+      },
+      {
+        path: "/a",
+        name: "a",
+        element: A,
+        children: [
+          {
+            path: "/a/a1",
+            element: lazy(() => import("../views/A/A1")),
+            children: [],
+            meta: {},
+            name: "a1",
+          },
+          {
+            path: "/a/a2",
+            element: lazy(() => import("../views/A/A2")),
+            children: [],
+            meta: {},
+            name: "a2",
+          },
+          {
+            path: "/a/a3",
+            element: lazy(() => import("../views/A/A3")),
+            children: [],
+            meta: {},
+            name: "a3",
+          },
+        ],
+        meta: {},
+      },
+      {
+        path: "/b",
+        name: "b",
+        element: lazy(() => import("../views/B")),
+        children: [],
+        meta: {},
+      },
+      {
+        path: "/c",
+        name: "c",
+        element: lazy(() => import("../views/C")),
+        children: [],
+        meta: {},
+      },
+    ];
+
+第二步：
+	在index.js下循环出路由
+	import routers from "./routers";
+    import { Suspense } from "react";
+    import {
+      Routes,
+      Route,
+      useNavigate,
+      useLocation,
+      useParams,
+      useSearchParams,
+    } from "react-router-dom";
+    /*
+        统一渲染的组件
+    */
+    const Elements = (props) => {
+      let { element: Element } = props;
+      const navigate = useNavigate();
+      const location = useLocation();
+      const params = useParams();
+      const [searchParams] = useSearchParams();
+      const routingInformation = {
+        navigate,
+        location,
+        params,
+        searchParams,
+      };
+      return <Element {...routingInformation} />;
+    };
+    const createRouter = (routers) => {
+      return (
+        <>
+          {routers.map((item, index) => {
+            let { path } = item;
+            return (
+              <Route
+                key={index}
+                path={path}
+                element={<Elements {...item}></Elements>}
+              >
+                {item.children &&
+                  item.children.length > 0 &&
+                  createRouter(item.children)}
+              </Route>
+            );
+          })}
+        </>
+      );
+    };
+    const RouterView = () => {
+      return (
+        <Suspense fallback={<>正在加载中...</>}>
+          <Routes>{createRouter(routers)}</Routes>
+        </Suspense>
+      );
+    };
+    export default RouterView;
+
+第三步：
+	在组件中使用
+    import React from "react";
+    import { HashRouter, NavLink } from "react-router-dom";
+    import sty from "./App.module.less";
+    import RouterView from "./router";
+
+    export default function App() {
+      return (
+        <HashRouter>
+          <div>
+            <div className={sty.nav}>
+              <NavLink to="/a">A</NavLink>
+              <NavLink to="/b">B</NavLink>
+              <NavLink to="/c">C</NavLink>
+            </div>
+            <div>
+              <RouterView></RouterView>
+            </div>
+          </div>
+        </HashRouter>
+      );
+    }
+```
+
