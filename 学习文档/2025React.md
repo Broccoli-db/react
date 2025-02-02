@@ -311,7 +311,7 @@ JSX：javaScript and html（xml）把js和HTML标签混合在一起
 
 补充说明：第一次渲染页面是直接从虚拟DOM转为真实DOM，但是后期更新的时候，需要经过diff算法对比，对比出新旧DOM树的差异部分，然后渲染出差异的虚拟DOM
 
-JSX语法无法选择对象，但是可以通过React.createElement("button",{ className: "btn" }, "按钮")渲染一个对象
+JSX语法无法渲染对象，但是可以通过React.createElement("button",{ className: "btn" }, "按钮")渲染一个对象
 ```
 
 <img src="..\学习文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
@@ -603,7 +603,7 @@ useState返回的修改状态方法：
                 setXXX(XXX)
             },1000)
 
-useState修改状态值后拿到最新的值3种常用方法
+useState修改状态值后拿到最新的值2种常用方法
 	1.用useEffect
 	2.调用状态修改方法传回调函数
 		setXXX((v)=>{
@@ -1179,7 +1179,7 @@ useContext()用法
       
 创建步骤：		
 	1.创建全局公共容器，储存各个组件需要的公共信息
-		conts store = ceracteStore([reducer])
+		conts store = ceracteStore(reducer)
 	2.在组件内部获取公共状态信息，然后渲染
 		store.getState()
 	3.获取放在公共容器的事件池的事件
@@ -2374,5 +2374,52 @@ useNavigate:
         </HashRouter>
       );
     }
+```
+
+##### 五十五，配置样式全局变量
+
+```
+安装 style-resources-loader
+命令 pnpm i style-resources-loader
+
+在config文件夹下的webpack.config.js文件
+
+需要配置scss或者sass就创建common.scss/common.sass
+```
+
+<img src="../学习文档/配置样式全局变量.png">
+
+##### 五十六，useReducer
+
+```jsx
+类似于redcux
+用法：接收两个参数
+	参数1：reducer方法
+	参数2：初始值对象
+    
+    import React, { useReducer } from "react";
+    export default function A1() {
+      const reducer = (state, action) => {
+        state = { ...state };
+        switch (action.type) {
+          case "increment":
+            return { count: state.count + 1 };
+          case "decrement":
+            return { count: state.count - 1 };
+          default:
+            throw new Error();
+        }
+      };
+      const [state, dispatch] = useReducer(reducer, { count: 0 });
+
+      return (
+        <div>
+          <div>{state.count}</div>
+          <button onClick={() => dispatch({ type: "increment" })}>+</button>
+          <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+        </div>
+      );
+    }
+
 ```
 

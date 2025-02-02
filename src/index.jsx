@@ -24,9 +24,9 @@ root.render(
 );
 
 // 测试代理
-// fetch("/jian/subscriptions/recommended_collections")
-//   .then((res) => res.json())
-//   .then((res) => console.log(res));
-// fetch("/zhi/news/latest")
-//   .then((res) => res.json())
-//   .then((res) => console.log(res));
+fetch("/jian/subscriptions/recommended_collections")
+  .then((res) => res.json())
+  .then((res) => console.log(res));
+fetch("/zhi/news/latest")
+  .then((res) => res.json())
+  .then((res) => console.log(res));
