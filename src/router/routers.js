@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { lazy } from "react";
 import A from "../views/A";
+import { withKeepAlive } from "keepalive-react-component";
 export default [
   {
     path: "/",
@@ -9,7 +10,7 @@ export default [
   {
     path: "/a",
     name: "a",
-    element: A,
+    element: withKeepAlive(A, { cacheId: "a", scroll: true }),
     children: [
       {
         path: "/a",
@@ -42,7 +43,10 @@ export default [
   {
     path: "/b",
     name: "b",
-    element: lazy(() => import("../views/B")),
+    element: withKeepAlive(
+      lazy(() => import("../views/B")),
+      { cacheId: "b", scroll: true }
+    ),
     children: [],
     meta: {},
   },

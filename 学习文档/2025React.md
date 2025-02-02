@@ -2423,3 +2423,19 @@ useNavigate:
 
 ```
 
+##### 五十五，react组件缓存
+
+```jsx
+安装 keepalive-react-component 
+命令 pnpm i keepalive-react-component 
+
+import { KeepAliveProvider, withKeepAlive } from "keepalive-react-component";
+KeepAliveProvider:
+	<KeepAliveProvider>
+		把路由配置表包裹起来
+	</KeepAliveProvider>
+withKeepAlive：
+	withKeepAlive(组件，{cacheId:'定义一个id'，scroll:true}) scroll:缓存页面滚动的位置
+```
+
+<img src="../学习文档/路由缓存.png">

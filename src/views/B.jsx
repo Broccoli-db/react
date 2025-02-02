@@ -1,5 +1,12 @@
-import React from "react";
+import { Button } from "antd";
+import React, { useState } from "react";
 
 export default function B() {
-  return <div>我是B</div>;
+  const [num, setNum] = useState(0);
+  return (
+    <div>
+      {num}
+      <Button onClick={() => setNum(num + 1)}></Button>
+    </div>
+  );
 }

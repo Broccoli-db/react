@@ -37,6 +37,7 @@
     "jest": "^27.4.3",
     "jest-resolve": "^27.4.2",
     "jest-watch-typeahead": "^1.0.0",
+    "keepalive-react-component": "^1.0.1",
     "less": "^4.2.1",
     "less-loader": "^8.1.1",
     "mini-css-extract-plugin": "^2.4.5",

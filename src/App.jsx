@@ -2,7 +2,7 @@ import React from "react";
 import { HashRouter, NavLink } from "react-router-dom";
 import sty from "./App.module.less";
 import RouterView from "./router";
-
+import { KeepAliveProvider, withKeepAlive } from "keepalive-react-component";
 export default function App() {
   return (
     <HashRouter>
@@ -13,7 +13,10 @@ export default function App() {
           <NavLink to="/c">C</NavLink>
         </div>
         <div>
-          <RouterView></RouterView>
+          {/* 使用KeepAliveProvider把路由配置包裹 */}
+          <KeepAliveProvider>
+            <RouterView></RouterView>
+          </KeepAliveProvider>
         </div>
       </div>
     </HashRouter>
