@@ -174,7 +174,7 @@ MVC：model数据层 + view视图层 + controller控制层
 	 ***单向数据驱动***
 ```
 
-<img src="..\学习文档\MVC.png" alt="MVC" style="zoom:50%;" />
+<img src="..\文档\MVC.png" alt="MVC" style="zoom:50%;" />
 
 ##### 九，MVVM
 
@@ -183,7 +183,7 @@ MVVM:model数据层 + view视图层 + vievModel数据/视图监听层
 	**双向驱动**
 ```
 
-<img src="..\学习文档\MVVM.png" alt="MVVM" style="zoom:50%;" />
+<img src="..\文档\MVVM.png" alt="MVVM" style="zoom:50%;" />
 
 ##### 十，JSX构建视图的基础知识
 
@@ -314,7 +314,7 @@ JSX：javaScript and html（xml）把js和HTML标签混合在一起
 JSX语法无法渲染对象，但是可以通过React.createElement("button",{ className: "btn" }, "按钮")渲染一个对象
 ```
 
-<img src="..\学习文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
+<img src="..\文档\JSX渲染机制.png" alt="JSX渲染机制" style="zoom: 67%;" />
 
 ##### 十四，封装一个简单的迭代对象方法
 
@@ -613,7 +613,7 @@ useState修改状态值后拿到最新的值2种常用方法
 
 ```
 
-<img src="..\学习文档\useState更新视图过程.png" alt="useState更新视图过程" style="zoom:50%;" />
+<img src="..\文档\useState更新视图过程.png" alt="useState更新视图过程" style="zoom:50%;" />
 
 ##### 二十二，useState的优化机制
 
@@ -657,7 +657,7 @@ useStart修改状态方法在循环for/in中使用flushSync，不管循环几次
 	hooks组件执行10次，x输出为11
 ```
 
-<img src="..\学习文档\useState刷新视图原理.png" alt="useState刷新视图原理" style="zoom:50%;" />
+<img src="..\文档\useState刷新视图原理.png" alt="useState刷新视图原理" style="zoom:50%;" />
 
 ##### 二十三，手写简单的useState Hooks函数
 
@@ -745,7 +745,7 @@ useEffect(()=>{
 	
 ```
 
-<img src="..\学习文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
+<img src="..\文档\useEffect执行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
 
 ##### 二十六，useLayouEffect
 
@@ -753,7 +753,7 @@ useEffect(()=>{
 与useEffect运行原理基本一致，但是useLayouEffect会比useEffect更早
 ```
 
-<img src="..\学习文档\useLayouEffect执行原理.png" alt="useEffect执行原理" style="zoom: 33%;" />
+<img src="..\文档\useLayouEffect执行原理.png" alt="useEffect执行原理" style="zoom: 33%;" />
 
 ##### 二十七，useRef  与  React.forwardRef  以及  useImperativeHandle
 
@@ -926,7 +926,7 @@ ev.composedPath()得到一个数组，
 存在即执行，冒泡同理但不需要反正数组
 ```
 
-<img src="..\学习文档\合成事件运行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
+<img src="..\文档\合成事件运行原理.png" alt="useEffect执行原理" style="zoom: 50%;" />
 
 ##### 三十，useMemo
 
@@ -1159,7 +1159,7 @@ useContext()用法
 	可以在调用组件的时候在返回的闭包中在做一些其他的逻辑操作
 ```
 
-<img src="..\学习文档\高阶组件.png" alt="useEffect执行原理" style="zoom: 80%;" />
+<img src="..\文档\高阶组件.png" alt="useEffect执行原理" style="zoom: 80%;" />
 
 ##### 三十七，Redux
 
@@ -1204,7 +1204,7 @@ useContext()用法
     	pnpm i @reduxjs/toolkit redux redux-logger redux-promise redux-thunk 
 ```
 
-46<img src="..\学习文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
+46<img src="..\文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
 
 ##### 三十八，创建并引入Redux
 
@@ -1224,7 +1224,7 @@ useContext()用法
 	最后在组件调用
 ```
 
-<img src="../学习文档/创建并使用Redux.png"/>
+<img src="../文档/创建并使用Redux.png"/>
 
 ##### 三十九，使用Redux
 
@@ -1326,7 +1326,7 @@ useContext()用法
     }
 ```
 
-<img src="../学习文档/组件使用Redux.png" style="zoom:80%;" />
+<img src="../文档/组件使用Redux.png" style="zoom:80%;" />
 
 ##### 四十，实现Redux部分源码
 
@@ -1362,7 +1362,7 @@ dispatch方法：
 所以调用dispatch({type:"@@redux/INIT"+36位的随机数并转成36进制})
 ```
 
-<img src="../学习文档/Redux底层源码与执行逻辑.png" style="zoom: 80%;" />
+<img src="../文档/Redux底层源码与执行逻辑.png" style="zoom: 80%;" />
 
 ##### 四十一，Redux工程化
 
@@ -1429,7 +1429,7 @@ redux.js文件：
 	state.getSate().xxxx  存储的对应数据对象
 ```
 
-<img src="../学习文档/Redux工程化.jpg"/>
+<img src="../文档/Redux工程化.jpg"/>
 
 ##### 四十二，Redux创建以及对Redux工程化
 
@@ -1562,7 +1562,7 @@ redux.js文件：
 //最后在组件调用公共数据以及修改数据的方法
 ```
 
-<img src="../学习文档/Redux组件内使用方法.jpg"/>
+<img src="../文档/Redux组件内使用方法.jpg"/>
 
 ##### 四十三，手写Redux的combineReducers部分源码
 
@@ -1580,7 +1580,7 @@ const myCombineReducers = (reducers)=>{
 }
 ```
 
-<img src="../学习文档/Redux使用combineReducers内部执行逻辑.png"/>
+<img src="../文档/Redux使用combineReducers内部执行逻辑.png"/>
 
 ##### 四十三，React-Redux
 
@@ -1940,7 +1940,7 @@ Redirect：
     exact：对from的地址精准匹配
 ```
 
-<img src="../学习文档/reactRouter5基础使用.png" style="zoom: 80%;" >
+<img src="../文档/reactRouter5基础使用.png" style="zoom: 80%;" >
 
 ##### 四十八，react-router-dom  v5版本 多级路由
 
@@ -1954,7 +1954,7 @@ Route：
     }}></Route>
 ```
 
-<img src="../学习文档/多级路由.png">
+<img src="../文档/多级路由.png">
 
 ##### 四十九，构建路由表统一管理路由
 
@@ -2136,7 +2136,7 @@ Suspense组件：
                 </Suspense>
 ```
 
-<img src="../学习文档/路由懒加载.png">
+<img src="../文档/路由懒加载.png">
 
 ##### 五十一，获取到路由中的相关信息以及路由跳转
 
@@ -2186,7 +2186,7 @@ Suspense组件：
     才能拿到对应的路由信息
 ```
 
-<img src="../学习文档/获取路由相关信息.png" style="zoom: 80%;" >
+<img src="../文档/获取路由相关信息.png" style="zoom: 80%;" >
 
 ##### 五十二，NavLin和Link的区别
 
@@ -2230,7 +2230,7 @@ useNavigate:
     })
 ```
 
-<img src="../学习文档/ReactRouterDom @6 多级路由.png">
+<img src="../文档/ReactRouterDom @6 多级路由.png">
 
 ##### 五十四，对react-router-dom @6 路由表统一管理
 
@@ -2387,7 +2387,7 @@ useNavigate:
 需要配置scss或者sass就创建common.scss/common.sass
 ```
 
-<img src="../学习文档/配置样式全局变量.png">
+<img src="../文档/配置样式全局变量.png">
 
 ##### 五十六，useReducer
 
@@ -2438,4 +2438,41 @@ withKeepAlive：
 	withKeepAlive(组件，{cacheId:'定义一个id'，scroll:true}) scroll:缓存页面滚动的位置
 ```
 
-<img src="../学习文档/路由缓存.png">
+<img src="../文档/路由缓存.png">
+
+##### 五十六，配置环境变量
+
+```jsx
+在项目根目录下创建：
+	.env.development：本地环境
+	.env.production：生产环境
+在文件必须以"REACT_APP_"开头命名
+
+	.env.development：
+	REACT_APP_API_URL=本地环境
+
+	.env.production：
+	REACT_APP_API_URL=生产环境
+```
+
+##### 五十六，webpack打包原理
+
+```
+webpack其实就是一个平台，在平台中，我们会安装/融入配置各种打包规则
+	mode：打包模式（开发环境development，生产环境production）
+	entry：入口（webpack就是从入口开始，根据CommonJS/ES6module模块规范化，分析出模块之间的依赖，从而按照相关的依赖关系，进行打包）
+	output:出口
+	loader：加载器（一般都是用于实现代码编写的）
+	plugin：插件
+```
+
+##### 五十七，强缓存以及协商缓存
+
+<img src="../文档/浏览器缓存.png">
+
+##### 五十八，useTransition
+
+```
+
+```
+
