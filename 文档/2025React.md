@@ -2470,9 +2470,442 @@ webpack其实就是一个平台，在平台中，我们会安装/融入配置各
 
 <img src="../文档/浏览器缓存.png">
 
-##### 五十八，useTransition
+##### 五十八，useTransition 18版本与19版本区别
 
+```jsx
+18版本
+useTransition:
+	直接调用返回一个数组
+	数组的第一个元素是渲染的状态，true/false
+	数组的第二个元素是一个方法
+	方法接受一个回调函数，所有在回调执行的逻辑优先级都比较低
+    回调函数不能是异步函数
+    
+    基础用法
+	import React, { useState, useTransition } from "react";
+    import sty from "./C.module.less"
+    export default function C() {
+      const [isPending, startTransition] = useTransition();
+      const [arr, steArr] = useState([
+        {
+          name: "tab1",
+          active: true
+        },
+        {
+          name: "tab2",
+          active: false
+        },
+        {
+          name: "tab3",
+          active: false
+        }
+      ]);
+      const [index, steIndex] = useState(0)
+      const change = (index) => {
+        startTransition(() => {
+          steIndex(index)
+        })
+        steArr((pre) => {
+          return pre.map((item, i) => {
+            if (i === index) {
+              item.active = true
+            } else {
+              item.active = false
+            }
+            return item
+          })
+        })
+      }
+      return <div>
+        <div className={sty.tab}>
+          {
+            arr.map((item, index) => {
+              return <div
+                style={{ background: item.active ? "#ccc" : "#fff" }}
+                onClick={() => change(index)}
+              >
+                {item.name}
+              </div>
+            })
+          }
+        </div>
+        {index === 0 && <div>我是0</div>}
+        {index === 1 && <div>
+          {new Array(50000).fill(0).map((item, index) => {
+            return <div key={index}>我是{index}</div>
+          })
+          }
+        </div>}
+        {index === 2 && <div>我是2</div>}
+      </div>;
+    }
+19版本：
+	useTransition:
+	直接调用返回一个数组
+	数组的第一个元素是渲染的状态，true/false
+	数组的第二个元素是一个方法
+	方法接受一个回调函数，所有在回调执行的逻辑优先级都比较低
+    回调函数可以是异步函数
+    
+    import React, { useState, useTransition } from 'react'
+    export default function C() {
+        const [name, setName] = useState('')
+        const [isLoading, setTransition] = useTransition()
+        const sub = async () => {
+            setTransition(async () => {
+                try {
+                    const res = await fetch("/zhi/news/latest")
+                    const data = await res.json()
+                } catch (error) {
+                    console.log(error);
+                }
+            })
+        }
+        return (
+            <div>
+                <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+                <button onClick={sub} disabled={isLoading}>{isLoading ? '加载中' : '提交'}</button>
+                <h1>{name}</h1>
+            </div>
+        )
+    }
 ```
+
+##### 五十九，useActionState 19版本
+
+```jsx
+useActionState()
+
+	接收三个参数：
+		参数一：一个回调函数，可接收多个参数，参数一上一次返回的值，参数二以及后面的参数，被调用传进来的参数
+		参数二：一个初始值
+		参数三(可选)：一个字符串，包含此表单修改的唯一页面URL
+		
+	返回值：一个数组，数组三个元素
+		元素一：参数一回调函数的返回值
+		元素二：一个方法，调用执行执行参数一回调函数的逻辑，可以传参数
+		元素三：参数一回调函数被调用后是否执行结束的布尔值
+		
+		调用元素二方法必须放在startTransition方法内
+        
+		import React, { useState, useActionState, startTransition } from 'react'
+        export default function C() {
+          const [name, setName] = useState('')
+          const [data, sub, isLoading] = useActionState(async (pre, num) => {
+            console.log(pre, num);
+            try {
+              const res = await fetch("/zhi/news/latest")
+              const data = await res.json()
+              return data
+            } catch (error) {
+              return error
+            }
+          }, null)
+          return (
+            <div>
+              <input type="text" value={name} onChange={(e) => setName(e.target.value)} />
+              <button onClick={() => {
+                startTransition(() => {
+                  sub("123")
+                })
+              }} disabled={isLoading}>{isLoading ? '加载中' : '提交'}</button>
+              <h1>{name}</h1>
+            </div>
+          )
+        }
+```
+
+<img src="../文档/useActionState.png">
+
+##### 五十九，useActionState结合From表单使用
+
+```jsx
+import React, { useActionState } from 'react'
+export default function C() {
+  const [data, sub, isLoading] = useActionState(async (pre, formData) => {
+    console.log(formData.get('name'));
+    console.log(formData.get('age'));
+    console.log(formData.get('sex'));
+    try {
+      const res = await fetch("/zhi/news/latest")
+      const data = await res.json()
+      return data
+    } catch (error) {
+      return error
+    }
+  }, null)
+  return (
+    <div>
+      <form action={sub}>
+        <input type="text" name='name' />
+        <input type="text" name='age' />
+        <input type="text" name='sex' />
+        <button type="submit" disabled={isLoading}>{isLoading ? '加载中' : '提交'}</button>
+      </form>
+      <div>{JSON.stringify(data)}</div>
+    </div>
+  )
+}
+useActionState:
+	返回的方法作为form的action，button的type属性改为submit，
+    点击按钮时会自动自行useActionState第一个参数的回调函数内逻辑，
+    input设置name属性
+    在回调函数的第二参数，xxx.get('xxx') 可以拿到input对应的值
+```
+
+##### 六十，useOptimistic 乐观更新
+
+```jsx
+useOptimistic(初始值，回调函数)
+	参数一：初始值
+	参数二：回调函数(旧值，传递过来的新值)，返回旧值和新值合并的值
+返回值：数组
+	[返回的的新值，添加新值的方法]
+	添加新值的方法需要方法中startTransition执行
+
+    import React, { useOptimistic, useState, startTransition } from 'react'
+    function Index() {
+      const [data, setData] = useState([{
+        title: '张三',
+        id: 18
+      }])
+      const [newData, addData] = useOptimistic(data, (odlValue, newValue) => {
+        return [...odlValue, newValue]
+      })
+      const add = (newValue) => {
+        startTransition(async () => {
+          addData(newValue)
+          const res = await fetch("/zhi/news/latest")
+          const data = await res.json()
+          setData((odlValue) => {
+            return [...odlValue, newValue]
+          })
+        })
+      }
+      return (
+        <div>
+          {
+            newData.map((item, index) => {
+              return (
+                <div key={item.id}>
+                  <span>{item.title}</span>
+                  <span>{item.id}</span>
+                </div>
+              )
+            })
+          }
+          <button onClick={() => add({
+            title: '李四',
+            id: 20
+          })}>添加</button>
+        </div>
+      )
+    }
+    export default Index
+```
+
+##### 六十一，useFormStatus 19版本  (react-dom提供)
+
+```jsx
+const { pending, data, method, action } = useFormStatus();
+
+    pending：布尔值。
+    		如果为 true，则表示父级 <form> 正在等待提交；否则为 false。
+            
+    data：实现了 FormData interface 的对象，包含父级 <form> 正在提交的数据；
+		  如果没有进行提交或没有父级 <form>，它将为 null。
+          
+    method：字符串，可以是 'get' 或 'post'。
+    	   表示父级 <form> 使用 GET 或 POST HTTP 方法 进行提交。
+           默认情况下，<form> 将使用 GET 方法，并可以通过 method 属性指定。
+           
+    action：一个传递给父级 <form> 的 action 属性的函数引用。
+    	   如果没有父级 <form>，则该属性为 null。
+           如果在 action 属性上提供了 URI 值，或者未指定 action 属性，status.action 将为 null。
+           
+    import React from 'react'
+    import { useFormStatus } from "react-dom"
+    const Button = function Button(props) {
+      let { type } = props
+      const { pending, data, method, action } = useFormStatus()
+      console.log(pending, data?.get('name'), method, action);
+      return <button type={type} disabled={pending}>{pending ? 'loading...' : 'submit'}</button>
+    }
+    function Index() {
+      return (
+        <form action={() => new Promise((resolve, reject) => {
+          setTimeout(() => {
+            resolve('success')
+          }, 2000)
+        })
+        }>
+          <input type="text" name='name' />
+          <Button type={'submit'} />
+        </form>
+      )
+    }
+    export default Index
+
+	注释：只要Button组件在form标签中，
+    	 可以通过useFormStatus拿到form表单的提交状态(pending)
+		 以及form表单的input数据，提交表单的接口协议（get/put/post....）
+         还有form表单的action(提交接口)
+```
+
+##### 六十二，use
+
+```jsx
+use 是一个 React API，它可以让你读取类似于 Promise 或 context 的资源的值。
+而且还可以在条件语句以及循环中使用
+
+读取promise结果
+	当使用 Promise 调用 use API 时，它会与 Suspense 和 错误边界 集成
+	请求接口必须放在函数组件外执行，否则会导致死循环
+    
+	import React, { use, } from 'react'
+    import axios from 'axios';
+    const data = axios.get("/zhi/news/latest").then((res) => {
+      return res.data
+    })
+    export default function Index() {
+      console.log(use(data));
+      return (
+        <div>
+          {JSON.stringify(use(data))}
+        </div>
+      )
+    }
+
+还可以代替useConText hooks函数
+	import React, { use, } from 'react'
+    import context from '../../conText';
+    export default function Index() {
+      console.log(use(context));
+      return (
+        <div>
+          {JSON.stringify(use(data))}
+        </div>
+      )
+    }
+```
+
+##### 六十三，ErrorBoundary 错误边界
+
+```jsx
+安装 react-error-boundary
+命令 pnpm i react-error-boundary
+使用ErrorBoundary组件包裹组件即可，会自动捕获到错误
+```
+
+<img src="../文档/错误边界.jpg">
+
+##### 六十四，useRef  19版本
+
+```jsx
+简化了ref的值传递给子组件，不需要再使用forwardRef
+
+子父传参
+    import React, { useEffect, useRef, useImperativeHandle } from 'react'
+    function Index() {
+      const a = useRef(null)
+      useEffect(() => {
+        console.log(a.current.name)
+      })
+      return (
+        <div>
+          <A ref={a} />
+        </div>
+      )
+    }
+    const A = (porps) => {
+      useImperativeHandle(porps.ref, () => {
+        return {
+          name: 'test',
+        }
+      })
+      return <div >hello</div>
+    }
+    export default Index
+
+获取子组件标签
+	import React, { useEffect, useRef } from 'react'
+    function Index() {
+      const a = useRef(null)
+      useEffect(() => {
+        console.log(a.current)
+      })
+      return (
+        <div>
+          <A ref={a} />
+        </div>
+      )
+    }
+    const A = (porps) => {
+      return <div ref={porps.ref}>hello</div>
+    }
+    export default Index
+```
+
+##### 六十五，context 19版本
+
+```jsx
+可以省去Provider
+
+创建一个Context上下文
+	import React from "react";
+    const Context = React.createContext();
+    export default Context;
+
+使用Context上下文
+	import React, { useEffect } from "react";
+    import Context from "./conText";
+    export default function App() {
+      return (
+        <>
+            <Context value={{
+              theme: "light",
+            }}>
+              <App />
+            </Context>
+        </>
+      );
+    }
+
+组件获取到conText上下文
+	import React, { useEffect, use, useContext } from 'react'
+    import Context from '../../conText'
+    function App() {
+      //两种方法都可获取到
+      let { theme } = useContext(Context) 
+      let { theme: data } = use(Context)
+      useEffect(() => {
+        console.log(theme, data)
+      })
+      return (
+        <div>
+        </div>
+      )
+    }
+
+    export default App
+```
+
+##### 六十七，支持文档元数据  19版本
+
+```jsx
+import React from 'react'
+export default function Index() {
+  return (
+    <div>
+      <article>
+        <title>456</title>
+        <meta name="author" content="Josh" />
+        <link rel="author" href="https://twitter.com/joshcstory/" />
+        <meta name="keywords" content={789} />
+      </article>
+    </div>
+  )
+}
 
 ```
 
