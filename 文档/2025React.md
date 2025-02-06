@@ -1204,7 +1204,7 @@ useContext()用法
     	pnpm i @reduxjs/toolkit redux redux-logger redux-promise redux-thunk 
 ```
 
-46<img src="..\文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
+<img src="..\文档\Redux创建运用流程.png" alt="useEffect执行原理" style="zoom: 33%;" />
 
 ##### 三十八，创建并引入Redux
 
