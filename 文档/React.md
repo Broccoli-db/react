@@ -2586,7 +2586,7 @@ useActionState()
 		元素二：一个方法，调用执行执行参数一回调函数的逻辑，可以传参数
 		元素三：参数一回调函数被调用后是否执行结束的布尔值
 		
-		调用元素二方法必须放在startTransition方法内
+		调用方法必须放在startTransition方法内
         
 		import React, { useState, useActionState, startTransition } from 'react'
         export default function C() {
