@@ -684,8 +684,10 @@ export function useState(initialState) {
     if (typeof newState === 'function') {
       newState = newState(_state[currenIndex])
     }
-    _state[currenIndex] = newState;
-    defer(renderComponent)
+     if(！Object.is(_state[currenIndex],newState)){
+           _state[currenIndex] = newState;
+    		defer(renderComponent)
+     }
   }
   _index += 1;
   return [_state[currenIndex], setState]
@@ -2907,5 +2909,16 @@ export default function Index() {
   )
 }
 
+```
+
+##### 六十八，受控组件与非受控组件
+
+```
+受控组件：
+	受到React的useState状态，
+	需要提供value和onchang处理函数
+非受控组件：
+	表单的值不受到react的状态管理，
+	需要通过ref或者DOM获取数据值
 ```
 
