@@ -3040,3 +3040,13 @@ export default service
 	表单的值不受到react的状态管理，
 	需要通过ref或者DOM获取数据值
 ```
+
+##### 七十，hooks组件和类组件的区别
+
+```
+1.Hooks 组件比类组件更简洁、易读、好维护 ✅
+2.useEffect 统一管理生命周期，减少代码冗余 ✅
+3.useState 让状态管理更直观，不需要 this.state ✅
+4.React 官方推荐 Hooks，未来可能淘汰类组件 ✅
+```
+
