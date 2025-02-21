@@ -968,6 +968,16 @@ useCallback()使用：
  	优化子组件无效渲染，
  	只在子组件接收的状态值参数发生了改变才会刷新视图
  	
+    memo函数还可以接受第二个参数，memo(组件，回调函数)
+	回调函数：
+    	该函数返回false，那么memo接受的组件则不会刷新
+        函数还可以接受到两个参数，旧的props，新的props
+        
+        (prevProps, nextProps)=>{
+            return prevProps.someProp === nextProps.someProp
+        }
+        someProp被更改时不刷新子组件
+    
 useCallback结合memo使用：
 
      const Son = memo(() => {
